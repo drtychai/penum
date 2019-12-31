@@ -1,6 +1,16 @@
 # Content Discovery and Enumeration
 Current working build takes in a newline delineated list of IPs and/or domains.
 
+## Overview
+Given a file of domain names, the following actions are performed in this order:
+1. Initial subdomain discovery via:
+  - `subfinder`
+  - `sublist3r`
+  - `aiodnsbrute`
+1. Full subdomain discovery via `amass` using outputs from `1.` as input of known subdomain(s)
+1. DNS flyover to discover, screenshot, and output list of HTTP servers via `aquatone`
+1. Scan all valid HTTP servers via `nikto`
+
 ## Usage
 For a list of hosts:
 ```
