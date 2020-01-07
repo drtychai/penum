@@ -100,6 +100,7 @@ RUN cd $HOME/tools \
 ### aiodnsbrute
 RUN cd $HOME/tools \
     && git clone https://github.com/blark/aiodnsbrute.git && cd aiodnsbrute \
+    && curl https://raw.githubusercontent.com/blark/aiodnsbrute/8c9b6514d2f08c344b1cc71490fa074fbabcb90b/aiodnsbrute/cli.py > aiodnsbrute/cli.py \
     && python3 -m pip install .
 
 # Pull penum src and wordlists
