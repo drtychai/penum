@@ -18,7 +18,7 @@ RUN apt update \
                       gcc g++ libc6-dev make pkg-config \
                       libgmp-dev libmpfr-dev libmpc-dev \
                       git curl wget vim parallel ftp nikto \
-                      unzip p7zip chromium-browser \
+                      unzip p7zip chromium-browser tmux \
     && apt clean
 
 # Install Languages
