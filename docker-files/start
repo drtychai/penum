@@ -1,0 +1,11 @@
+#!/bin/bash
+
+docker run --rm --detach --privileged -it \
+	--net=host \
+	-v $(pwd):/mnt \
+    -v /home/bynx/bugbounty:/root/bb \
+	--hostname penum \
+	--name penum \
+	penum \
+	bash \
+    && echo "[+] Started"

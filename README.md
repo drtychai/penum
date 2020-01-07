@@ -1,4 +1,4 @@
-# Content Discovery and Enumeration
+# Parallel Enumerator
 Current working build takes in a newline delineated list of IPs and/or domains.
 
 ## Overview
@@ -12,10 +12,13 @@ Given a file of domain names, the following actions are performed in this order:
 1. Scan all valid HTTP servers via `nikto`
 
 ## Usage
+### Local
 For a list of hosts:
 ```
 ./run.sh <HOST_FILE> [<OUTPUT_DIR>] [<NUM_OF_JOBS>]
 ```
+
+### Docker
 
 ## Tools
 - GNU parallel

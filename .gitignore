@@ -2,3 +2,5 @@ hosts.txt
 parallel.log
 parallel.out/*
 output/*
+.venv2/*
+.venv3/*
