@@ -18,7 +18,7 @@ RUN apt update \
                       gcc g++ libc6-dev make pkg-config \
                       libgmp-dev libmpfr-dev libmpc-dev \
                       git curl wget vim parallel ftp nikto \
-                      unzip p7zip chromium-browser tmux \
+                      unzip p7zip chromium-browser tmux jq \
     && apt clean
 
 # Install Languages
@@ -102,7 +102,8 @@ RUN cd $HOME/tools \
     && git clone https://github.com/blark/aiodnsbrute.git && cd aiodnsbrute \
     && python3 -m pip install .
 
-# Pull penum src
-RUN git clone https://github.com/drtychai/penum.git
+# Pull penum src and wordlists
+RUN cd && git clone https://github.com/drtychai/penum.git
+RUN cd && git clone --recurse-submodules https://github.com/drtychai/wordlists.git
 
 WORKDIR /root

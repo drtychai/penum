@@ -45,9 +45,9 @@ function run_aiodnsbrute ()
     local OUTPUT="${O_DIR}/${DOMAIN}-aiodnsbrute.json"
     local OUTPUT_LONG="${O_DIR}/${DOMAIN}-aiodnsbrute-long.json"
 
-    python3 ~/opt/aiodnsbrute/aiodnsbrute/cli.py --recursive --no-wildcard \
+    aiodnsbrute --recursive --no-wildcard \
             -r ./resolvers.txt -o json -f $OUTPUT --no-verify $DOMAIN
-    python3 ~/opt/aiodnsbrute/aiodnsbrute/cli.py --recursive --no-wildcard \
+    aiodnsbrute --recursive --no-wildcard \
             -r ./resolvers.txt -w ~/wordlists/domain-bf-wordlist.txt \
             -o json -f $OUTPUT_LONG --no-verify $DOMAIN
 
