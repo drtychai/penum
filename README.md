@@ -13,12 +13,17 @@ Given a file of domain names, the following actions are performed in this order:
 
 ## Usage
 ### Local
-For a list of hosts:
+For a list of hosts, run the following from `/path/to/penum.git` directory:
 ```
 ./run.sh <HOST_FILE> [<OUTPUT_DIR>] [<NUM_OF_JOBS>]
 ```
 
 ### Docker
+Use the following in your Dockerfile to pull the prebuilt image from the Docker Hub:
+```
+FROM drtychai/penum:latest
+```
+Alternatively: `docker pull drtychai/penum:latest`
 
 ## Tools
 - GNU parallel
@@ -41,7 +46,8 @@ For a list of hosts:
 - (if possible) Look into possible integration for populating/producing a `.burp` with info
 
 ### Misc
-- Containerize
+- Fix paths to allow execution from any directory
+- Improve container
 - Integrate custom recon-ng module
 - DB integration
 - (Way down the road) Some way of visualizing data
