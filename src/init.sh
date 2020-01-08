@@ -17,7 +17,7 @@ fi
 
 # Setup a switch to choose if nmap or not
 if [[ $HOST =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-    ./ip-enum.sh  $HOST $O_DIR &
+    ./src/ip-enum.sh  $HOST $O_DIR &
     wait
 fi
 
