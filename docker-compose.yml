@@ -1,0 +1,16 @@
+version: '3'
+services:
+    api:
+        image: penum:api
+        build: ./api
+        ports:
+            - "5000:5000"
+    amass:
+        image: penum:amass
+        build: ./amass
+        working_dir: /
+        ports:
+            - "31337:31337" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
+
