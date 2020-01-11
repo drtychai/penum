@@ -15,11 +15,15 @@ def api(host):
     qs = request.query_string.decode("utf-8")
     if qs:
         host += "?" + qs
-    return host
+
+    # Start enumeration
+    return jsonify(get_output(host))
 
 @app.route("/api/amass/<path:host>")
 def api_amass(host):
-    # Call amass container api
-    return jsonify(get_output(host))
+    output = ''
+    with open("/amass{}.out".format(host), "wb") as f:
+        output += f.read()
+    return jsonify(str(output, encoding="utf-8").rstrip())
 
 app.run(host="0.0.0.0")

@@ -19,7 +19,7 @@ def get_output(host):
             output += chunk
             print(str(chunk,encoding="utf-8").rstrip())
 
-    with open("amass.out", "wb") as f:
+    with open("/amass{}.out".format(host), "wb") as f:
         f.write(output)
     return str(output, encoding="utf-8").rstrip()
 
