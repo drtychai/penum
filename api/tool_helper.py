@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 import socket
 
-def get_output(host):
+def tool_port_map(tool):
+    mapping = {"amass":31337,
+               "subfinder":31338,
+               "aiodnsbrute":31339}
+    return mapping["{}".format(tool)]
+
+def run_service(tool,host):
+    """Run service and copy output from tool's container."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(("amass", 31337))
+    s.connect((tool, tool_port_map(tool)))
 
     # Send host
-    #host = "provinnovate.com"
     payload = bytes(host+"\n", encoding='utf-8')
     s.send(payload)
 
@@ -17,14 +23,21 @@ def get_output(host):
             break
         elif chunk != b'':
             output += chunk
-            print(str(chunk,encoding="utf-8").rstrip())
+            #print(str(chunk,encoding="utf-8").rstrip())
 
-    with open("/amass{}.out".format(host), "wb") as f:
+    with open("/{}-{}.out".format(tool,host), "wb") as f:
         f.write(output)
-    return str(output, encoding="utf-8").rstrip()
+    return str(output, encoding="utf-8").rstrip().split()
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("\nUsage:\n\t{} <HOST>\n".format(sys.argv[0]))
-        sys.exit(1)
-    get_output(host)
+def get_output(tool,host):
+    """Return the given tool's output as a list."""
+    output = b''
+    with open("/{}-{}.out".format(tool,host), "rb") as f:
+        output += f.read()
+    return str(output, encoding="utf-8").rstrip().split()
+
+def check_cache(host):
+    """Checks if host has already been enumerated. Return boolean."""
+    result = False
+    # check if file names exists
+    return result

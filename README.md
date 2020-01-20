@@ -12,7 +12,7 @@ Given a file of domain names, the following actions are performed in this order:
 1. Scan all valid HTTP servers via `nikto`
 
 ## Usage
-Start the swarm:
+Start all services:
 ```
 docker-compose up
 ```

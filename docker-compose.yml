@@ -13,4 +13,20 @@ services:
             - "31337:31337" # exposed:local
         entrypoint: /etc/run_xinetd.sh
         read_only: false
+    subfinder:
+        image: penum:subfinder
+        build: ./subfinder
+        working_dir: /
+        ports:
+            - "31338:31338" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
+    aiodnsbrute:
+        image: penum:aiodnsbrute
+        build: ./aiodnsbrute
+        working_dir: /
+        ports:
+            - "31339:31339" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
 
