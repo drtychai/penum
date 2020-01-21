@@ -6,8 +6,8 @@ service main
     wait = no
     user = root
     type = UNLISTED
-    bind = aiodnsbrute
-    port = 30002
+    bind = massdns
+    port = 30005
     server = /etc/run_tool.sh
     #server_args = --userspec=1000:1000 /home/ctf ./helloworld
     #per_source	= 10 # the maximum instances of this service per source IP address

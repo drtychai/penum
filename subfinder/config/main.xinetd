@@ -7,7 +7,7 @@ service main
     user = root
     type = UNLISTED
     bind = subfinder
-    port = 31338
+    port = 30001
     server = /etc/run_tool.sh
     #server_args = --userspec=1000:1000 /home/ctf ./helloworld
     #per_source	= 10 # the maximum instances of this service per source IP address

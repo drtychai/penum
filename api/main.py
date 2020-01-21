@@ -40,6 +40,22 @@ def api_aiodnsbrute(host):
     """Proxy aiodnsbrute service. Reutrns JSON output."""
     return jsonify(hosts=run_service("aiodnsbrute", host))
 
+@app.route("/api/sublist3r/<path:host>")
+def api_sublist3r(host):
+    """Proxy sublist3r service. Reutrns JSON output."""
+    return jsonify(hosts=run_service("sublist3r", host))
+
+@app.route("/api/gobuster/<path:host>")
+def api_gobuster(host):
+    """Proxy gobuster service. Reutrns JSON output."""
+    return jsonify(hosts=run_service("gobuster", host))
+
+@app.route("/api/massdns/<path:host>")
+def api_massdns(host):
+    """Proxy massdns service. Reutrns JSON output."""
+    return jsonify(hosts=run_service("massdns", host))
+
+
 #####################
 # Outputs
 #####################
@@ -69,5 +85,24 @@ def api_aiodnsbrute_output(host):
     """Return JSON of aiodnsbrute output."""
     return jsonify(tool="aiodnsbrute", domain=host,
                    subdomains=get_output("aiodnsbrute", host))
+
+@app.route("/api/output/sublist3r/<path:host>")
+def api_sublist3r_output(host):
+    """Return JSON of sublist3r output."""
+    return jsonify(tool="sublist3r", domain=host,
+                   subdomains=get_output("sublist3r", host))
+
+@app.route("/api/output/gobuster/<path:host>")
+def api_gobuster_output(host):
+    """Return JSON of gobuster output."""
+    return jsonify(tool="gobuster", domain=host,
+                   subdomains=get_output("gobuster", host))
+
+@app.route("/api/output/massdns/<path:host>")
+def api_massdns_output(host):
+    """Return JSON of massdns output."""
+    return jsonify(tool="massdns", domain=host,
+                   subdomains=get_output("massdns", host))
+
 
 app.run(host="0.0.0.0")

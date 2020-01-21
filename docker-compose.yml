@@ -10,7 +10,7 @@ services:
         build: ./amass
         working_dir: /
         ports:
-            - "31337:31337" # exposed:local
+            - "30000:30000" # exposed:local
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     subfinder:
@@ -18,7 +18,7 @@ services:
         build: ./subfinder
         working_dir: /
         ports:
-            - "31338:31338" # exposed:local
+            - "30001:30001" # exposed:local
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     aiodnsbrute:
@@ -26,7 +26,31 @@ services:
         build: ./aiodnsbrute
         working_dir: /
         ports:
-            - "31339:31339" # exposed:local
+            - "30002:30002" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
+    sublist3r:
+        image: penum:sublist3r
+        build: ./sublist3r
+        working_dir: /
+        ports:
+            - "30003:30003" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
+    gobuster:
+        image: penum:gobuster
+        build: ./gobuster
+        working_dir: /
+        ports:
+            - "30004:30004" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
+    massdns:
+        image: penum:massdns
+        build: ./massdns
+        working_dir: /
+        ports:
+            - "30005:30005" # exposed:local
         entrypoint: /etc/run_xinetd.sh
         read_only: false
 

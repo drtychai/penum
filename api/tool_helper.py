@@ -2,9 +2,12 @@
 import socket
 
 def tool_port_map(tool):
-    mapping = {"amass":31337,
-               "subfinder":31338,
-               "aiodnsbrute":31339}
+    mapping = {"amass":30000,
+               "subfinder":30001,
+               "aiodnsbrute":30002,
+               "sublist3r":30003,
+               "gobuster":30004,
+               "massdns":30005}
     return mapping["{}".format(tool)]
 
 def run_service(tool,host):
