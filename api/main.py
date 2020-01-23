@@ -2,28 +2,29 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-from subprocess import Popen, PIPE
 from tool_helper import *
+from multiprocessing import Pool, Process
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return """Usage:
-               Run penum: http://<hostname>[:<port>]/api/<target_host>
-               Run specific tool: http://<hostname>[:<port>]/api/<tool>/<target_host>
+    usage="""Usage:
+    Run penum: curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api
+    Run specific tool: http://<hostname>[:<port>]/api/<tool>/<target_host>
 
-               Get penum results: http://<hostname>[:<port>]/api/output/<target_host>
-               Get specific tool results: http://<hostname>[:<port>]/api/output/<tool>/<target_host>"""
+    Get penum results: http://<hostname>[:<port>]/api/output/<target_host>
+    Get specific tool results: http://<hostname>[:<port>]/api/output/<tool>/<target_host>
+    """
+    return usage
 
-@app.route("/api/<path:host>")
-def api(host):
+@app.route("/api", methods=['POST'])
+def api():
     """Main endpoint to kick of enumeration."""
-    ## ToDo: Change the following to utilize multiprocessing
-    run_service("amass", host)
-    run_service("subfinder", host)
-    run_service("aiodnsbrute", host)
-    return "penum complete..."
+    hosts = request.json['hosts']
+    for host in hosts:
+        penum(host)
+    return f"penum started on the following hosts: {hosts}"
 
 @app.route("/api/amass/<path:host>")
 def api_amass(host):
