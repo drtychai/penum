@@ -4,3 +4,4 @@ parallel.out/*
 output/*
 .venv2/*
 .venv3/*
+test.sh
