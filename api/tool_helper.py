@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from multiprocessing import Pool
+from dns import resolver, reversename
 import socket
+
 
 def tool_port_map(tool):
     mapping = {"amass":30000,
@@ -9,7 +11,8 @@ def tool_port_map(tool):
                "sublist3r":30003,
                "gobuster":30004,
                "massdns":30005,
-               "aquatone":30006}
+               "aquatone":30006,
+               "nmap":30007}
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, pool):
@@ -41,9 +44,12 @@ def run_service(tool,host):
 def get_output(tool,host):
     """Return the given tool's output as a list."""
     ret = ''
+    ext = "out"
+    if tool == "nmap":
+        ext = "json"
     try:
         output = b''
-        with open(f"/{tool}-{host}.out", "rb") as f:
+        with open(f"/{tool}-{host}.{ext}", "rb") as f:
             output += f.read()
         ret = str(output, encoding="utf-8").rstrip().split()
     except FileNotFoundError as e:
@@ -56,10 +62,19 @@ def check_cache(host):
     # check if file names exists
     return result
 
-def penum(host):
-    """Main controller for tools"""
+def reverseDNS(addr):
+    qname = reversename.from_address(addr)
+    return str(resolver.query(qname, 'PTR')[0])
+
+def find_subdomains(host):
+    """Main controller for subdomain enumeration tools."""
     pool = Pool()
     start_proc("subfinder", host, pool)
     start_proc("aiodnsbrute", host, pool)
     start_proc("amass", host, pool)
     return
+
+def port_scan(host):
+    """"Main controller for IP / Network enumeration."""
+    pool = Pool()
+    start_proc("nmap", host, pool)

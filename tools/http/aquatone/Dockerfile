@@ -10,7 +10,7 @@
 
 FROM ubuntu:18.04
 RUN apt update --fix-missing \
-    && apt -y install wget tar xinetd git \
+    && apt -y install wget tar xinetd git unzip \
     && apt clean
 
 #COPY --from=build /go/bin/amass /bin/amass

@@ -53,4 +53,20 @@ services:
             - "30005:30005" # exposed:local
         entrypoint: /etc/run_xinetd.sh
         read_only: false
+    aquatone:
+        image: penum:aquatone
+        build: ./tools/http/aquatone
+        working_dir: /
+        ports:
+            - "30006:30006" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
+    nmap:
+        image: penum:nmap
+        build: ./tools/network/nmap
+        working_dir: /
+        ports:
+            - "30007:30007" # exposed:local
+        entrypoint: /etc/run_xinetd.sh
+        read_only: false
 

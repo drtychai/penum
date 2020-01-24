@@ -4,6 +4,8 @@ from flask import request
 from flask import jsonify
 from tool_helper import *
 from multiprocessing import Pool, Process
+import socket
+import urllib.parse
 
 app = Flask(__name__)
 
@@ -23,7 +25,14 @@ def api():
     """Main endpoint to kick of enumeration."""
     hosts = request.json['hosts']
     for host in hosts:
-        penum(host)
+        #urllib.parse.unquote(encodedStr)
+        # Check for IP addr
+        try:
+            socket.inet_aton(addr)
+            port_scan(host)
+            find_subdomains(reverseDNS(host))
+        except socket.error:
+            find_subdomains(host)
     return f"penum started on the following hosts: {hosts}"
 
 @app.route("/api/amass/<path:host>")
@@ -104,6 +113,13 @@ def api_massdns_output(host):
     """Return JSON of massdns output."""
     return jsonify(tool="massdns", domain=host,
                    subdomains=get_output("massdns", host))
+
+@app.route("/api/output/nmap", methods=['POST'])
+def api_nmap_output():
+    """"Return JSON of nmap output."""
+    addr = request.json['addr'][0]
+    return jsonify(tool="nmap", results=get_output("nmap", addr))
+
 
 
 app.run(host="0.0.0.0")
