@@ -7,7 +7,7 @@ services:
             - "5000:5000"
     amass:
         image: penum:amass
-        build: ./amass
+        build: ./tools/subdomain/amass
         working_dir: /
         ports:
             - "30000:30000" # exposed:local
@@ -15,7 +15,7 @@ services:
         read_only: false
     subfinder:
         image: penum:subfinder
-        build: ./subfinder
+        build: ./tools/subdomain/subfinder
         working_dir: /
         ports:
             - "30001:30001" # exposed:local
@@ -23,7 +23,7 @@ services:
         read_only: false
     aiodnsbrute:
         image: penum:aiodnsbrute
-        build: ./aiodnsbrute
+        build: ./tools/subdomain/aiodnsbrute
         working_dir: /
         ports:
             - "30002:30002" # exposed:local
@@ -31,7 +31,7 @@ services:
         read_only: false
     sublist3r:
         image: penum:sublist3r
-        build: ./sublist3r
+        build: ./tools/subdomain/sublist3r
         working_dir: /
         ports:
             - "30003:30003" # exposed:local
@@ -39,7 +39,7 @@ services:
         read_only: false
     gobuster:
         image: penum:gobuster
-        build: ./gobuster
+        build: ./tools/subdomain/gobuster
         working_dir: /
         ports:
             - "30004:30004" # exposed:local
@@ -47,7 +47,7 @@ services:
         read_only: false
     massdns:
         image: penum:massdns
-        build: ./massdns
+        build: ./tools/subdomain/massdns
         working_dir: /
         ports:
             - "30005:30005" # exposed:local

@@ -8,7 +8,8 @@ def tool_port_map(tool):
                "aiodnsbrute":30002,
                "sublist3r":30003,
                "gobuster":30004,
-               "massdns":30005}
+               "massdns":30005,
+               "aquatone":30006}
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, pool):
