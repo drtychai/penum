@@ -44,14 +44,14 @@ def run_service(tool,host):
 def get_output(tool,host):
     """Return the given tool's output as a list."""
     ret = ''
-    ext = "out"
-    if tool == "nmap":
-        ext = "json"
     try:
         output = b''
-        with open(f"/{tool}-{host}.{ext}", "rb") as f:
+        with open(f"/{tool}-{host}.out", "rb") as f:
             output += f.read()
         ret = str(output, encoding="utf-8").rstrip().split()
+        if tool == "nmap":
+            # If XML, don't split into list
+            ret = str(output, encoding="utf-8").rstrip()
     except FileNotFoundError as e:
         ret = f"Error: {e}..."
     return ret

@@ -5,7 +5,7 @@ from flask import jsonify
 from tool_helper import *
 from multiprocessing import Pool, Process
 import socket
-import urllib.parse
+import xmltodict, json
 
 app = Flask(__name__)
 
@@ -25,10 +25,9 @@ def api():
     """Main endpoint to kick of enumeration."""
     hosts = request.json['hosts']
     for host in hosts:
-        #urllib.parse.unquote(encodedStr)
         # Check for IP addr
         try:
-            socket.inet_aton(addr)
+            socket.inet_aton(host)
             port_scan(host)
             find_subdomains(reverseDNS(host))
         except socket.error:
@@ -118,8 +117,12 @@ def api_massdns_output(host):
 def api_nmap_output():
     """"Return JSON of nmap output."""
     addr = request.json['addr'][0]
-    return jsonify(tool="nmap", results=get_output("nmap", addr))
-
-
+    try:
+        nmap_dict = xmltodict.parse(get_output("nmap", addr))
+        ret = json.dumps(nmap_dict)
+    except Exception as e:
+        nmap_dict = get_output("nmap", addr)
+        ret = jsonify(results=json.dumps(nmap_dict))
+    return ret
 
 app.run(host="0.0.0.0")

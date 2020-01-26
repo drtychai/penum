@@ -2,3 +2,4 @@ flask
 redis
 requests
 dnspython
+xmltodict
