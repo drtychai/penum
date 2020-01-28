@@ -52,8 +52,8 @@ def get_output(tool,host):
         if tool == "nmap":
             # If XML, don't split into list
             ret = str(output, encoding="utf-8").rstrip()
-    except FileNotFoundError as e:
-        ret = f"Error: {e}..."
+    except FileNotFoundError:
+        raise FileNotFoundError
     return ret
 
 def check_cache(host):
