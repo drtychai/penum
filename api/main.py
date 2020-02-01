@@ -12,35 +12,41 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     usage="""Usage:
-    Run penum: curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api
-    Run specific tool: curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>
+    Run penum: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api
+    Run specific tool: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>
 
-    Get penum results: curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output
-    Get specific tool results: curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>
+    Get penum results: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output
+    Get specific tool results: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>
     """
     return usage
 
 @app.route("/api", methods=['POST'])
 def api():
     """Main endpoint to kick of enumeration."""
-    hosts = request.json['hosts']
-    for host in hosts:
-        # Check for IP addr
-        try:
-            socket.inet_aton(host)
-            port_scan(host)
-            find_subdomains(reverseDNS(host))
-        except socket.error:
-            find_subdomains(host)
-    return f"penum started on the following hosts: {hosts}"
+    try:
+        hosts = request.json['hosts']
+        for host in hosts:
+            # Check for IP addr
+            try:
+                socket.inet_aton(host)
+                port_scan(host)
+                find_subdomains(reverseDNS(host))
+            except socket.error:
+                find_subdomains(host)
+        return f"penum started on the following hosts: {hosts}"
+    except TypeError:
+        raise TypeError("Content-Type header required.")
 
 @app.route("/api/<path:tool>", methods=['POST'])
 def api_tool(tool):
     """Proxy any tool server. Returns JSON ouput."""
-    hosts = request.json['hosts']
-    for host in hosts:
-        run_service(tool, host)
-    return f"{tool} ran on the following hosts: {hosts}"
+    try:
+        hosts = request.json['hosts']
+        for host in hosts:
+            run_service(tool, host)
+        return f"{tool} ran on the following hosts: {hosts}"
+    except TypeError:
+        raise TypeError("Content-Type header required.")
 
 @app.route("/api/output", methods=['POST'])
 def api_output():

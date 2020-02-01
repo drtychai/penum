@@ -32,19 +32,19 @@ This builds and starts all containers with an API endpoint at `http://localhost:
 ### Specific Functionality
 Run the core of penum:
 
-```curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api```
+```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api```
 
 Run specific tool:
 
-```curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>```
+```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>```
 
 Get all results:
 
-```curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output```
+```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output```
 
 Get specific tool results:
 
-```curl -X POST -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>```
+```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>```
 
 ## Tools used
 ### Subdomain Enumeration

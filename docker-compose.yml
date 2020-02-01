@@ -70,3 +70,10 @@ services:
         entrypoint: /etc/run_xinetd.sh
         read_only: false
 
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+
+
