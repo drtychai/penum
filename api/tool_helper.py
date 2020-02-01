@@ -64,7 +64,7 @@ def check_cache(host):
 
 def reverseDNS(addr):
     qname = reversename.from_address(addr)
-    return str(resolver.query(qname, 'PTR')[0])
+    return str(resolver.query(qname, 'PTR')[0])[:-1]
 
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""

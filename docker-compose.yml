@@ -5,12 +5,21 @@ services:
         build: ./api
         ports:
             - "5000:5000"
+    web:
+        image: penum:php-www
+        build: ./www
+        ports:
+            - "80:80"
+        environment:
+            - API_ENDPOINT=http://api:5000/api
+        volumes:
+            - ./www/src:/var/www
     amass:
         image: penum:amass
         build: ./tools/subdomain/amass
         working_dir: /
         ports:
-            - "30000:30000" # exposed:local
+            - "30000"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     subfinder:
@@ -18,7 +27,7 @@ services:
         build: ./tools/subdomain/subfinder
         working_dir: /
         ports:
-            - "30001:30001" # exposed:local
+            - "30001"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     aiodnsbrute:
@@ -26,7 +35,7 @@ services:
         build: ./tools/subdomain/aiodnsbrute
         working_dir: /
         ports:
-            - "30002:30002" # exposed:local
+            - "30002"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     sublist3r:
@@ -34,7 +43,7 @@ services:
         build: ./tools/subdomain/sublist3r
         working_dir: /
         ports:
-            - "30003:30003" # exposed:local
+            - "30003"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     gobuster:
@@ -42,7 +51,7 @@ services:
         build: ./tools/subdomain/gobuster
         working_dir: /
         ports:
-            - "30004:30004" # exposed:local
+            - "30004"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     massdns:
@@ -50,7 +59,7 @@ services:
         build: ./tools/subdomain/massdns
         working_dir: /
         ports:
-            - "30005:30005" # exposed:local
+            - "30005"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     aquatone:
@@ -58,7 +67,7 @@ services:
         build: ./tools/http/aquatone
         working_dir: /
         ports:
-            - "30006:30006" # exposed:local
+            - "30006"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
     nmap:
@@ -66,14 +75,15 @@ services:
         build: ./tools/network/nmap
         working_dir: /
         ports:
-            - "30007:30007" # exposed:local
+            - "30007"
         entrypoint: /etc/run_xinetd.sh
         read_only: false
-
     db:
         image: postgres
         restart: always
         environment:
-            POSTGRES_PASSWORD: example
+            POSTGRES_PASSWORD: postgres
+        ports:
+            - "5432"
 
 
