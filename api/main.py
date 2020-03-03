@@ -12,19 +12,19 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     usage="""Usage:
-    Run penum: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api
-    Run specific tool: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>
+    Run penum: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api
+    Run specific tool: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>
 
-    Get penum results: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output
-    Get specific tool results: curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>
+    Get penum results: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output
+    Get specific tool results: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>
     """
     return usage
 
-@app.route("/api", methods=['POST'])
+@app.route("/", methods=['POST'])
 def api():
     """Main endpoint to kick of enumeration."""
     try:
-        hosts = request.json['hosts']
+        hosts = request.json['Hosts']
         for host in hosts:
             # Check for IP addr
             try:
@@ -37,22 +37,22 @@ def api():
     except TypeError:
         raise TypeError("Content-Type header required.")
 
-@app.route("/api/<path:tool>", methods=['POST'])
+@app.route("/<path:tool>", methods=['POST'])
 def api_tool(tool):
     """Proxy any tool server. Returns JSON ouput."""
     try:
-        hosts = request.json['hosts']
+        hosts = request.json['Hosts']
         for host in hosts:
             run_service(tool, host)
         return f"{tool} ran on the following hosts: {hosts}"
     except TypeError:
         raise TypeError("Content-Type header required.")
 
-@app.route("/api/output", methods=['POST'])
+@app.route("/output", methods=['POST'])
 def api_output():
     """Return JSON of unique list from all tool outputs."""
     tools = ["amass", "subfinder"]
-    hosts = request.json['hosts']
+    hosts = request.json['Hosts']
     output = []
     # TODO: Fix this nested silliness
     for host in hosts:
@@ -63,10 +63,10 @@ def api_output():
                 pass
     return jsonify(domain=host, subdomains=list(dict.fromkeys(output)))
 
-@app.route("/api/output/<path:tool>", methods=['POST'])
+@app.route("/output/<path:tool>", methods=['POST'])
 def api_tool_ouput(tool):
     """Return JSON of given tool output."""
-    hosts = request.json['hosts']
+    hosts = request.json['Hosts']
     output = []
     for host in hosts:
         try:
@@ -75,7 +75,7 @@ def api_tool_ouput(tool):
             pass
     return jsonify(subdomains=list(dict.fromkeys(output)))
 
-@app.route("/api/output/nmap", methods=['POST'])
+@app.route("/output/nmap", methods=['POST'])
 def api_nmap_output():
     """"Return JSON of nmap output."""
     addr = request.json['addr'][0]

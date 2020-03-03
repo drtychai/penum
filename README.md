@@ -1,7 +1,7 @@
 # Parallel Enumerator
 Current branch still in progress. Functionality is equivalent to `master`.
 
-This is an *active* enumerator. We take no responsibility for how this is used.
+This is an *active* enumerator. We take no responsibility for how or where this is used.
 
 ## Overview
 Give a host or list of hosts, the following actions are performed in this order:
@@ -24,27 +24,31 @@ penum requires `docker` and `docker-compose` be installed on the host.
 ## Usage
 From the root of this repository, start all services:
 ```
-docker-compose up
+docker-compose up -d
 ```
 
-This builds and starts all containers with an API endpoint at `http://localhost:5000/api`.
+To stop all service and *preserve* the database:
+```
+docker-compose down
+```
+
+To stop all service and *destroy* the database:
+```
+docker-compose down -v
+```
+
+Backend functionality is queried through the Golang HTTP server at: `http://localhost:8080`
 
 ### Specific Functionality
-Run the core of penum:
+Enumerate against single FQDN/IP:
+```
+curl -X POST -d "<target_host1>" http://<hostname>[:<port>]
+```
 
-```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api```
-
-Run specific tool:
-
-```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>```
-
-Get all results:
-
-```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output```
-
-Get specific tool results:
-
-```curl -X POST -H "Content-Type: application/json" -d '{"hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>```
+Enumerate against newline-delineated list of FQDNs/IPs:
+```
+curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload
+```
 
 ## Tools used
 ### Subdomain Enumeration

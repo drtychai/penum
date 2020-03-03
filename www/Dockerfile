@@ -1,11 +1,13 @@
-FROM php:7-apache
-ENV API_ENDPOINT="http://localhost:5000/api/"
+FROM golang:1.14
 
-COPY ./config/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY ./config/run_apache.sh /usr/local/bin/run_apache
-RUN a2enmod rewrite
+ENV GOOS linux
+ENV GOARCH amd64
+ENV GOPATH /go
 
-COPY src /var/www/
-RUN chown -R www-data:www-data /var/www
+RUN mkdir /www
+COPY ./src/* /www/
 
-CMD ["/usr/local/bin/run_apache"]
+
+WORKDIR /www
+CMD ["go", "run", "main.go"]
+

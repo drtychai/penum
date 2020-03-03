@@ -1,0 +1,18 @@
+<!-- forms.html -->
+{{if .Success}}
+    <h1>Thanks for your message!</h1>
+{{else}}
+    <h1>penum</h1>
+    <form action="http://localhost:8080/" method="POST">
+        <label>Hostname:</label><br />
+        <input type="text" name="hostname"><br />
+        <input type="submit">
+    </form>
+    <form
+      enctype="multipart/form-data"
+      action="http://localhost:8080/upload"
+      method="POST">
+        <input type="file" name="uploadedfile" />
+        <input type="submit" value="upload" />
+    </form>
+{{end}}
