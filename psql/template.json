@@ -1,0 +1,67 @@
+{
+  [
+    "host": "localhost",
+    "ip": "127.0.0.1",
+    "fqdn": "localhost",
+    "openPorts":{
+      [
+        "port": 22,
+        "service": "ssh"
+      ],
+      [
+        "port": 80,
+        "service": "http"
+       ]
+    },
+    "subdomains": [
+        {[
+           "fqdn": "ex1.localhost.com",
+           "openPorts":{
+             [
+               "port": 443,
+               "service": "https"
+             ]
+            }
+         ],
+         [
+           "fqdn":"ex2.localhost.com",
+           "openPorts":{
+             [
+               "port": 139,
+               "service": "smb"
+             ],
+             [
+               "port": 445,
+               "service": "smb"
+             ]
+            }
+         ],
+         [
+           "fqdn":"exN.localhost.com",
+           "openPorts":{
+             [
+               "port": 139,
+               "service": "smb"
+             ],
+             [
+               "port": 445,
+               "service": "smb"
+             ]
+           }
+         ]
+       }
+    ]
+  ],
+  [
+    "host": "93.184.216.34",
+    "ip": "93.184.216.34",
+    "fqdn": "example.com",
+    "openPorts":{
+      [
+        "port": 443,
+        "service": "https"
+      ]
+    },
+    "subdomains": [{[]}]
+  ]
+}
