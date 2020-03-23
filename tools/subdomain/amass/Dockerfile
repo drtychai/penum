@@ -19,6 +19,6 @@ ADD config/run_xinetd.sh /etc/run_xinetd.sh
 RUN chmod +x /etc/run_xinetd.sh
 RUN chmod +x /etc/run_tool.sh
 
-RUN mkdir /$TOOL && chmod 700 /$TOOL
+RUN mkdir -p /output/subdomain && chmod -R 700 /output/subdomain
 
 RUN service xinetd restart

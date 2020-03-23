@@ -1,12 +1,16 @@
 version: '3'
 volumes:
     db-vol:
+    out-vol:
 services:
     api:
         image: penum:api
         build: ./api
         ports:
             - "5000:5000"
+        volumes:
+            - out-vol:/output
+            - db-vol:/var/lib/postgresql/data
     web:
         image: penum:www
         build: ./www
@@ -34,6 +38,8 @@ services:
         ports:
             - "30000"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     subfinder:
         image: penum:subfinder
@@ -42,6 +48,8 @@ services:
         ports:
             - "30001"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     aiodnsbrute:
         image: penum:aiodnsbrute
@@ -50,6 +58,8 @@ services:
         ports:
             - "30002"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     sublist3r:
         image: penum:sublist3r
@@ -58,6 +68,8 @@ services:
         ports:
             - "30003"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     gobuster:
         image: penum:gobuster
@@ -66,6 +78,8 @@ services:
         ports:
             - "30004"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     massdns:
         image: penum:massdns
@@ -74,6 +88,8 @@ services:
         ports:
             - "30005"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     aquatone:
         image: penum:aquatone
@@ -82,6 +98,8 @@ services:
         ports:
             - "30006"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
     nmap:
         image: penum:nmap
@@ -90,6 +108,8 @@ services:
         ports:
             - "30007"
         entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
         read_only: false
 
 

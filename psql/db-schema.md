@@ -1,34 +1,37 @@
 # PSQL Schema
 Table Outline:
 
-|     Host    |     IP    |        FQDN         |  Open Port  |  Port Service  |  Last Modified  |
-|:-----------:|:---------:|:-------------------:|:-----------:|:--------------:|:---------------:|
-|   tst.com   |  0.0.0.0  |  ec2-asdf-test.com  |     80      |      http      |    YYYY-MM-DD   |
-|   tst.com   |  0.0.0.0  |  ec2-asdf-test.com  |     443     |      https     |    YYYY-MM-DD   |
-|   asdf.co   |    ::     |      asdf.co        |     22      |      ssh       |    YYYY-MM-DD   |
-|  b.asdf.co  |    ::1    |     b.asdf.co       |    8080     |      http      |    YYYY-MM-DD   |
+|   Domain  |      FQDN      |   IPv4    |   IPv6   | Open Port |  Port Service  |  Last Modified  |
+|:---------:|:--------------:|:---------:|:--------:|:---------:|:--------------:|:---------------:|
+|  tst.com  |  www.tst.com   |  0.0.0.0  |          |   80      |      http      |    YYYY-MM-DD   |
+|  tst.com  |  www.tst.com   |  0.0.0.0  |          |   443     |      https     |    YYYY-MM-DD   |
+|  tst.com  |  asdf.tst.com  |  0.0.0.1  |          |   443     |      https     |    YYYY-MM-DD   |
+|  asdf.co  |  asdf.co       |           |    ::    |   22      |      ssh       |    YYYY-MM-DD   |
+|  asdf.co  |  b.asdf.co     |           |    ::1   |   8080    |      http      |    YYYY-MM-DD   |
 
 
 # Queries
 All queries are structed for python3, e.g.,
 ```python
-table = "penum"
+table = "output"
 q = "SELECT * FROM %s", table
 cursor.execute(*q)
 ```
 
 ## Tool I/O
 Update table with output
-- `"INSERT INTO penum VALUES (%s, %s, %s)", <arg0>, <arg1>, <arg2>`
+- `"INSERT INTO output VALUES (%s, %s, %s)", <arg0>, <arg1>, <arg2>`
   => determine column length first
 
 ## Important Queries
 Scanned Hosts => "Have we scanned this host before?"
-- `SELECT host FROM penum;`
+- `SELECT host FROM output;`
 
 Results => "What are the results for <host>?"
-- `SELECT * FROM penum WHERE host LIKE '*%s'", <host>`
+- `SELECT * FROM output WHERE host LIKE '*%s'", <host>`
 
 Subdomains => "What are the subdomains of <host>?"
-- `"SELECT host FROM penum WHERE host LIKE '*%s'", <host>`
+- `"SELECT host FROM output WHERE host LIKE '*%s'", <host>`
 
+Webservers => "What are all the webservers for *.as.df?"
+- `SELECT host from output WHERE port-service LIKE 'http' OR port-service LIKE 'https'`

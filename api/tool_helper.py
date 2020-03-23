@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from multiprocessing import Pool
 from dns import resolver, reversename
+from multiprocessing import Pool
+import psql_helper
 import socket
-
 
 def tool_port_map(tool):
     mapping = {"amass":30000,
@@ -46,15 +46,17 @@ def get_output(tool,host):
     ret = ''
     try:
         output = b''
-        with open(f"/{tool}-{host}.out", "rb") as f:
+        out_f = f"/{tool}-{host}.out"
+        with open(out_f, "rb") as f:
             output += f.read()
         ret = str(output, encoding="utf-8").rstrip().split()
         if tool == "nmap":
             # If XML, don't split into list
             ret = str(output, encoding="utf-8").rstrip()
+        psql_helper.update_table(out_f)
     except FileNotFoundError:
         raise FileNotFoundError
-    return ret
+return ret
 
 def check_cache(host):
     """Checks if host has already been enumerated. Return boolean."""
@@ -69,9 +71,19 @@ def reverseDNS(addr):
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
     pool = Pool()
-    start_proc("subfinder", host, pool)
-    start_proc("aiodnsbrute", host, pool)
+    p_sub = start_proc("subfinder", host, pool)
+    p_aio = start_proc("aiodnsbrute", host, pool)
+
+    # wait until completed
+    # TODO: Check if this works
+    p_sub.get()
+    p.aio.get()
+
+    # amass ingests outputs from other subdomain tools
     start_proc("amass", host, pool)
+
+    # update db will amass output
+    psql_helper.update_table("/output/subdomain/amass.json")
     return
 
 def port_scan(host):

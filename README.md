@@ -50,6 +50,12 @@ Enumerate against newline-delineated list of FQDNs/IPs:
 curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload
 ```
 
+Custom DB query:
+```
+psql -U postgres -d penum -c "<CUSTOM_QUERY>"
+```
+
+
 ## Tools used
 ### Subdomain Enumeration
 - subfinder
@@ -81,4 +87,5 @@ curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload
 ### Misc
 - Integrate custom recon-ng module
 - DB integration
+  - Create converter per tools output into DB JSON syntax
 - (Way down the road) Some way of visualizing data
