@@ -91,12 +91,22 @@ services:
         volumes:
             - out-vol:/output
         read_only: false
+    recon-ng:
+        image: penum:recon-ng
+        build: ./tools/subdomain/recon-ng
+        working_dir: /
+        ports:
+            - "30006"
+        entrypoint: /etc/run_xinetd.sh
+        volumes:
+            - out-vol:/output
+        read_only: false
     aquatone:
         image: penum:aquatone
         build: ./tools/http/aquatone
         working_dir: /
         ports:
-            - "30006"
+            - "30007"
         entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
@@ -106,7 +116,7 @@ services:
         build: ./tools/network/nmap
         working_dir: /
         ports:
-            - "30007"
+            - "30008"
         entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output

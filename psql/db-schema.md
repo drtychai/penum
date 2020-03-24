@@ -25,13 +25,13 @@ Update table with output
 
 ## Important Queries
 Scanned Hosts => "Have we scanned this host before?"
-- `SELECT host FROM output;`
+- `SELECT domain FROM output;`
 
 Results => "What are the results for <host>?"
-- `SELECT * FROM output WHERE host LIKE '*%s'", <host>`
+- `SELECT * FROM output WHERE domain LIKE '*%s'", <host>`
 
 Subdomains => "What are the subdomains of <host>?"
-- `"SELECT host FROM output WHERE host LIKE '*%s'", <host>`
+- `"SELECT domain FROM output WHERE domain LIKE '*%s'", <host>`
 
 Webservers => "What are all the webservers for *.as.df?"
-- `SELECT host from output WHERE port-service LIKE 'http' OR port-service LIKE 'https'`
+- `SELECT domain from output WHERE port-service LIKE 'http' OR port-service LIKE 'https'`

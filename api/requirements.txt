@@ -3,3 +3,4 @@ redis
 requests
 dnspython
 xmltodict
+psycopg2

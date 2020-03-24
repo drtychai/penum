@@ -26,10 +26,10 @@ def api():
     try:
         hosts = request.json['Hosts']
         for host in hosts:
-            # Check for IP addr
+            # Only port scan if host has IP addr
             try:
                 socket.inet_aton(host)
-                port_scan(host)
+                #port_scan(host)
                 find_subdomains(reverseDNS(host))
             except socket.error:
                 find_subdomains(host)

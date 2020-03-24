@@ -36,10 +36,9 @@ def run_service(tool,host):
             output += chunk
 
     # Store output on API host
-    with open(f"/{tool}-{host}.out", "wb") as f:
-        f.write(output)
+    #with open(f"/{tool}-{host}.out", "wb") as f:
+    #    f.write(output)
     return
-    #return str(output, encoding="utf-8").rstrip().split()
 
 def get_output(tool,host):
     """Return the given tool's output as a list."""
@@ -56,7 +55,7 @@ def get_output(tool,host):
         psql_helper.update_table(out_f)
     except FileNotFoundError:
         raise FileNotFoundError
-return ret
+    return ret
 
 def check_cache(host):
     """Checks if host has already been enumerated. Return boolean."""
@@ -71,18 +70,23 @@ def reverseDNS(addr):
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
     pool = Pool()
-    p_sub = start_proc("subfinder", host, pool)
-    p_aio = start_proc("aiodnsbrute", host, pool)
+    procs = []
+    tools = ["subfinder", "sublist3r",
+             "aiodnsbrute", "gobuster",
+             "recon-ng"]
 
-    # wait until completed
-    # TODO: Check if this works
-    p_sub.get()
-    p.aio.get()
+    for tool in tools:
+        p = start_proc(tool, host, pool)
+        procs.append(p)
+
+    # wait until all pool processes complete
+    for proc in procs:
+        proc.get()
 
     # amass ingests outputs from other subdomain tools
     start_proc("amass", host, pool)
 
-    # update db will amass output
+    # update db with amass output
     psql_helper.update_table("/output/subdomain/amass.json")
     return
 

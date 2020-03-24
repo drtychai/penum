@@ -2,12 +2,11 @@
 set -e
 read host
 
-# Amalgamate subdomains from other tools
-echo '' > /output/subdomain/all-${host}
-for f in `ls /output/subdomains | grep "${host}"`; do
-    cat ${f} >> /output/subdomain/all-${host}
-done
+# Amalgamate and sort subdomains from other tools
+TOOL_OUT="/output/subdomain"
+cat ${TOOL_OUT}/*-${host}.out >> ${TOOL_OUT}/all-${host}.tmp
+cat ${TOOL_OUT}/all-${host}.tmp | sort -u > ${TOOL_OUT}/all-${host}
 
 # Allow additional flags
-exec amass enum -ip -d "${host}" -df /output/subdomain/all-${host} -json /output/subdomain/amass-${host}.json "$@" 2>/dev/null
+amass enum -ip -d "${host}" -df ${TOOL_OUT}/all-${host} -json ${TOOL_OUT}/amass-${host}.json "$@" 2>/dev/null
 echo "DONE"

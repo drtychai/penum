@@ -29,6 +29,14 @@ def init():
     query(q)
     return
 
+def is_cached(host):
+    """Boolean function to determine if domain has been enumerated."""
+    cached = False
+    q = "SELECT * from output WHERE domain LIKE '%s'", host
+    rows = query(q)
+    if len(rows) > 1:
+        cached = True
+    return cached
 
 def update_table(filename):
     """Take data in filename and insert into DB."""
