@@ -4,5 +4,5 @@ parallel.out/*
 output/*
 .venv2/*
 .venv3/*
-test.sh
 api/__pycache__/*
+api/logs/*
