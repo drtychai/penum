@@ -12,14 +12,15 @@ def tool_port_map(tool):
                "sublist3r":30003,
                "gobuster":30004,
                "massdns":30005,
-               "aquatone":30006,
-               "nmap":30007}
+               "recon-ng":30006,
+               "aquatone":30007,
+               "nmap":30008}
     return mapping[f"{tool}"]
 
-def start_proc(tool, host, pool):
-    return pool.apply_async(run_service, args=(tool, host))
+def start_proc(tool, host, logger, pool):
+    return pool.apply_async(run_service, args=(tool, host, logger))
 
-def run_service(tool,host):
+def run_service(tool, host, logger):
     """Run service and copy output from tool's container."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((tool, tool_port_map(tool)))
@@ -32,13 +33,8 @@ def run_service(tool,host):
     while True:
         chunk = s.recv(2048)
         if b"DONE" in chunk:
+            logger.info(f"\033[1;32m[*] {tool} FINISHED...\033[0m")
             break
-        elif chunk != b'':
-            output += chunk
-
-    # Store output on API host
-    #with open(f"/{tool}-{host}.out", "wb") as f:
-    #    f.write(output)
     return
 
 def get_output(tool,host):
@@ -61,7 +57,7 @@ def get_output(tool,host):
 def check_cache(host):
     """Checks if host has already been enumerated. Return boolean."""
     result = False
-    # check if file names exists
+    # TODO: check if file names exists
     return result
 
 def reverseDNS(addr):
@@ -70,12 +66,11 @@ def reverseDNS(addr):
 
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
-
     logger = logging.getLogger('penum')
     logger.setLevel(logging.DEBUG)
 
     # create file handler which logs even debug messages
-    fh = logging.FileHandler('/output/api.log')
+    fh = logging.FileHandler('/logs/flask-api.log')
     fh.setLevel(logging.DEBUG)
 
     # create console handler with a higher log level
@@ -98,8 +93,8 @@ def find_subdomains(host):
              "recon-ng"]
 
     for tool in tools:
-        logger.info(f"[+] Starting {tool}...")
-        p = start_proc(tool, host, pool)
+        logger.info(f"\033[1;34m[+] Starting {tool}...\033[0m")
+        p = start_proc(tool, host, logger, pool)
         procs.append(p)
 
     # wait until all pool processes complete
@@ -107,8 +102,8 @@ def find_subdomains(host):
         proc.get()
 
     # amass ingests outputs from other subdomain tools
-    logger.info("[+] Starting amass...")
-    p = start_proc("amass", host, pool)
+    logger.info(f"\033[1;34m[+] Starting amass...\033[0m")
+    p = start_proc("amass", host, logger, pool)
     p.get()
 
     # update db with amass output
@@ -118,5 +113,5 @@ def find_subdomains(host):
 def port_scan(host):
     """"Main controller for IP / Network enumeration."""
     pool = Pool()
-    start_proc("nmap", host, pool)
+    start_proc("nmap", host, None, pool)
     return

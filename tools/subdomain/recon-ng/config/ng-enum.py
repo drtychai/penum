@@ -32,20 +32,22 @@ def run_module(reconBase, module, domain):
         m.do_run(None)
     except Exception as e:
         print(f"[-] Exception hit: {e}")
-        #raise
+        raise
     return
 
 def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
     """Initialize recon-ng base class and run core of script."""
-    dot_recon_dir = "/.recon-ng"
+    stamp = datetime.datetime.now().strftime('%M:%H-%m_%d_%Y')
+    wspace = domains[0]+stamp
 
     reconb = base.Recon(base.Mode.CLI)
     reconb.start(base.Mode.CLI)
+    reconb._init_workspace(wspace)
 
     report_module = "reporting/list"
     bf_module = "recon/domains-hosts/brute_hosts"
-    module_list = ["recon/domains-hosts/bing_domain_web", "recon/domains-hosts/google_site_web", "recon/domains-hosts/netcraft",
-                   "recon/domains-hosts/shodan_hostname", "recon/netblocks-companies/whois_orgs", "recon/hosts-hosts/resolve"]
+    module_list = ["recon/hosts-hosts/resolve", "recon/domains-hosts/bing_domain_web", "recon/domains-hosts/google_site_web",
+                   "recon/domains-hosts/shodan_hostname", "recon/netblocks-companies/whois_orgs", "recon/domains-hosts/netcraft"]
     install_modules(reconb, module_list + [f"{bf_module}",f"{report_module}"])
 
     for domain in domains:
@@ -53,11 +55,10 @@ def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
             run_module(reconb, module, domain)
 
         # subdomain bruteforcing if wordlist set
-        if os.path.exists(bf_wordlist):
-            m = reconb._do_modules_load(bf_module)
-            m.options['wordlist'] = bf_wordlist
-            m.options['source'] = domain
-            m.do_run(None)
+        m = reconb._do_modules_load(bf_module)
+        m.options['wordlist'] = bf_wordlist
+        m.options['source'] = domain
+        m.do_run(None)
 
         # Export results if output file given
         if out_file:
@@ -95,7 +96,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-w", dest="wordlist", type=str,
                          help="wordlist file for subdomain brute forcing. if none specified defaults to $RECON_HOME/data/hostnames.txt",
-                         default=f"{os.getenv('RECON_HOME')}/data/hostnames.txt")
+                         default="/wl-default.txt")
 
     parser.add_argument("-p", dest="permlist", type=argparse.FileType('r'),
                          help="input file of permutations for alt-dns. if none specified will use default list.", default=None)

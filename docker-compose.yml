@@ -11,6 +11,7 @@ services:
         volumes:
             - out-vol:/output
             - db-vol:/var/lib/postgresql/data
+            - ./api/logs:/logs
     web:
         image: penum:www
         build: ./www
