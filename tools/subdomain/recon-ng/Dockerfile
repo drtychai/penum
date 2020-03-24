@@ -33,4 +33,5 @@ RUN chmod +x /etc/run_tool.sh
 
 RUN mkdir -p /${TOOL_OUT} && chmod -R 700 /${TOOL_OUT}
 
+WORKDIR /recon-ng
 RUN service xinetd restart

@@ -93,7 +93,6 @@ def find_subdomains(host):
 
     pool = Pool()
     procs = []
-    #procs = {}
     tools = ["subfinder", "sublist3r",
              "aiodnsbrute", "gobuster",
              "recon-ng"]
@@ -102,22 +101,22 @@ def find_subdomains(host):
         logger.info(f"[+] Starting {tool}...")
         p = start_proc(tool, host, pool)
         procs.append(p)
-        #procs[f"{tool}"] = p
 
     # wait until all pool processes complete
     for proc in procs:
         proc.get()
-        #logger.info(f"[+] {tool} FINISHED")
 
     # amass ingests outputs from other subdomain tools
     logger.info("[+] Starting amass...")
-    start_proc("amass", host, pool)
+    p = start_proc("amass", host, pool)
+    p.get()
 
     # update db with amass output
-    psql_helper.update_table("/output/subdomain/amass.json")
+    #psql_helper.update_table("/output/subdomain/amass.json")
     return
 
 def port_scan(host):
     """"Main controller for IP / Network enumeration."""
     pool = Pool()
     start_proc("nmap", host, pool)
+    return

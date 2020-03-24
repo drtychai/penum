@@ -95,6 +95,8 @@ services:
         image: penum:recon-ng
         build: ./tools/subdomain/recon-ng
         working_dir: /
+        environment:
+            RECON_HOME: /.recon-ng
         ports:
             - "30006"
         entrypoint: /etc/run_xinetd.sh

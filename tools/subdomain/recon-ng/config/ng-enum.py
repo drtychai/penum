@@ -20,13 +20,8 @@ def run_altdns(domains):
 
 def install_modules(reconBase, modules):
     """Install required modules via recon-ng marketplace."""
-    # Install recon modules
     for module in modules:
         reconBase._do_marketplace_install(module)
-
-    # Install reporting modules
-    #reconBase._do_marketplace_install('reporting/csv')
-    reconBase._do_marketplace_install('reporting/list')
     return
 
 def run_module(reconBase, module, domain):
@@ -37,46 +32,39 @@ def run_module(reconBase, module, domain):
         m.do_run(None)
     except Exception as e:
         print(f"[-] Exception hit: {e}")
+        #raise
     return
 
-def run_recon(domains, bf_wordlist, is_altdns_set):
+def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
     """Initialize recon-ng base class and run core of script."""
     dot_recon_dir = "/.recon-ng"
-    stamp = datetime.datetime.now().strftime('%M:%H-%m_%d_%Y')
-    wspace = domains[0]+stamp
 
     reconb = base.Recon(base.Mode.CLI)
-    reconb._mode = base.Mode.CLI
-    reconb._init_global_options()
-    reconb._init_workspace(wspace)
+    reconb.start(base.Mode.CLI)
 
-    module_list = ["recon/domains-hosts/brute_hosts", "recon/domains-hosts/bing_domain_web",
-                   "recon/domains-hosts/google_site_web", "recon/domains-hosts/netcraft",
-                   "recon/domains-hosts/shodan_hostname", "recon/netblocks-companies/whois_orgs",
-                   "recon/hosts-hosts/resolve"]
-    install_modules(reconb, module_list)
+    report_module = "reporting/list"
+    bf_module = "recon/domains-hosts/brute_hosts"
+    module_list = ["recon/domains-hosts/bing_domain_web", "recon/domains-hosts/google_site_web", "recon/domains-hosts/netcraft",
+                   "recon/domains-hosts/shodan_hostname", "recon/netblocks-companies/whois_orgs", "recon/hosts-hosts/resolve"]
+    install_modules(reconb, module_list + [f"{bf_module}",f"{report_module}"])
 
     for domain in domains:
         for module in module_list:
             run_module(reconb, module, domain)
-            # subdomain bruteforcing
-            m = reconb._do_modules_load("recon/domains-hosts/brute_hosts")
-            if bf_wordlist:
-                m.options['wordlist'] = bf_wordlist
-            else:
-                m.options['wordlist'] = f"{dot_recon_dir}/data/hostnames.txt"
-                m.options['source'] = domain
+
+        # subdomain bruteforcing if wordlist set
+        if os.path.exists(bf_wordlist):
+            m = reconb._do_modules_load(bf_module)
+            m.options['wordlist'] = bf_wordlist
+            m.options['source'] = domain
             m.do_run(None)
 
-        # Run reporting modules
-        #m = reconb._do_modules_load("reporting/csv")
-        #m.options['filename'] = f"/output/recon-ng-{domain}.csv"
-        #m.do_run(None)
-
-        m = reconb._do_modules_load("reporting/list")
-        m.options['filename'] = f"/output/subdomain/recon-ng-{domain}.out"
-        m.options['column'] = "host"
-        m.do_run(None)
+        # Export results if output file given
+        if out_file:
+            m = reconb._do_modules_load(report_module)
+            m.options['filename'] = out_file
+            m.options['column'] = "host"
+            m.do_run(None)
 
     if is_altdns_set:
         run_altdns(domains)
@@ -85,23 +73,31 @@ def run_recon(domains, bf_wordlist, is_altdns_set):
 def main(argv):
     try:
         domains = argv.domains
-        if argv.filename:
-            with open(argv.filename, 'r') as f:
-                domains += f.read()
+        with argv.in_file as f:
+            domains += f.read()
     except Exception as e:
         print(f"[-] Exception hit: {e}")
-
-    bf_wordlist = argv.wordlist.name if argv.wordlist else ""
-    run_recon(domains, bf_wordlist, argv.runAltDns)
+    run_recon(domains, argv.wordlist, argv.runAltDns, argv.out_file)
     return
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', dest='runAltDns', action='store_true', help="After recon, run AltDNS? (this requires alt-dns)")
-    parser.add_argument("-i", dest="filename", type=argparse.FileType('r'), help="input file of domains (one per line)", default=None)
-    parser.add_argument("domains", help="one or more domains", nargs="*", default=None)
-    parser.add_argument("-w", dest="wordlist", type=argparse.FileType('r'), help="input file of subdomain wordlist. must be in same directory as this file, or give full path", default=None)
-    parser.add_argument("-p", dest="permlist", type=argparse.FileType('r'), help="input file of permutations for alt-dns. if none specified will use default list.", default=None)
-    argv = parser.parse_args()
+    parser.add_argument('-a', dest='runAltDns', action='store_true',
+                         help="After recon, run AltDNS? (this requires alt-dns)")
 
-    main(argv)
+    parser.add_argument("-i", dest="in_file", type=argparse.FileType('r'),
+                         help="input file of domains (one per line)", default=None)
+
+    parser.add_argument("-o", dest="out_file", type=str,
+                         help="output file for recon-ng results. if none specified, results not exported.", default=None)
+
+    parser.add_argument("domains", help="one or more domains", nargs="*", default=None)
+
+    parser.add_argument("-w", dest="wordlist", type=str,
+                         help="wordlist file for subdomain brute forcing. if none specified defaults to $RECON_HOME/data/hostnames.txt",
+                         default=f"{os.getenv('RECON_HOME')}/data/hostnames.txt")
+
+    parser.add_argument("-p", dest="permlist", type=argparse.FileType('r'),
+                         help="input file of permutations for alt-dns. if none specified will use default list.", default=None)
+
+    main(parser.parse_args())
