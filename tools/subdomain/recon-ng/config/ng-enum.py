@@ -9,9 +9,9 @@ def run_altdns(domains):
     """Run altDNS with the given args."""
     for domain in domains:
         altCmd = f"python3 /altdns/altdns"
-        subdomains = f"/output/recon-ng-{domain}.lst"
+        subdomains = f"/output/subdomain/recon-ng-{domain}.out"
         permList = f"/altdns/words.txt"
-        output = f"/output/subdomain/altdns-{domain}.txt"
+        output = f"/output/subdomain/altdns-{domain}.out"
 
         # python altdns.py -i subdomainsList -o data_output -w permutationsList -r -s results_output.txt
         print("running alt-dns... please be patient :) results will be displayed in "+output)

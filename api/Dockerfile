@@ -7,7 +7,7 @@ RUN pip install -r requirements.txt
 COPY *.py /app/
 RUN chmod a+x *.py
 
-RUN mkdir -p /output && chmod -R 700 /output
+RUN mkdir -p /output && chmod -R 700 /output/
 
 CMD ["./main.py"]
 

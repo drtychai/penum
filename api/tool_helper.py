@@ -3,6 +3,7 @@ from dns import resolver, reversename
 from multiprocessing import Pool
 import psql_helper
 import socket
+import logging
 
 def tool_port_map(tool):
     mapping = {"amass":30000,
@@ -69,21 +70,47 @@ def reverseDNS(addr):
 
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
+
+    logger = logging.getLogger('penum')
+    logger.setLevel(logging.DEBUG)
+
+    # create file handler which logs even debug messages
+    fh = logging.FileHandler('/output/api.log')
+    fh.setLevel(logging.DEBUG)
+
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.ERROR)
+
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
     pool = Pool()
-    procs = []
+    procs0 = []
+    procs = {}
     tools = ["subfinder", "sublist3r",
              "aiodnsbrute", "gobuster",
              "recon-ng"]
 
     for tool in tools:
+        logger.info(f"[+] Starting {tool}...")
         p = start_proc(tool, host, pool)
         procs.append(p)
+        #procs[f"{tool}"] = p
 
     # wait until all pool processes complete
     for proc in procs:
         proc.get()
+        #logger.info(f"[+] {tool} FINISHED")
 
     # amass ingests outputs from other subdomain tools
+    logger.info("[+] Starting amass...")
     start_proc("amass", host, pool)
 
     # update db with amass output
