@@ -10,7 +10,8 @@ Give a host or list of hosts, the following actions are performed in this order:
     - `sublist3r`
     - `aiodnsbrute`
     - `gobuster`
-    - `amass`
+    - `recon-ng`
+1. Subdomains resolved via `massDNS` then ingested by `amass` for final round of subdomain discovery.
 1. DNS flyover to discover, screenshot, and output list of HTTP servers via `aquatone`
 1. Scan all valid HTTP servers via `nikto`
 
