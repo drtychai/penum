@@ -18,6 +18,7 @@ def tool_port_map(tool):
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, logger, pool):
+    logger.info(f"\033[1;34m[+] Starting {tool}...\033[0m")
     return pool.apply_async(run_service, args=(tool, host, logger))
 
 def run_service(tool, host, logger):
@@ -49,7 +50,6 @@ def get_output(tool,host):
         if tool == "nmap":
             # If XML, don't split into list
             ret = str(output, encoding="utf-8").rstrip()
-        psql_helper.update_table(out_f)
     except FileNotFoundError:
         raise FileNotFoundError
     return ret
@@ -66,6 +66,8 @@ def reverseDNS(addr):
 
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
+
+    # TODO: Make this into a logger class that can be imported
     logger = logging.getLogger('penum')
     logger.setLevel(logging.DEBUG)
 
@@ -93,7 +95,6 @@ def find_subdomains(host):
              "recon-ng"]
 
     for tool in tools:
-        logger.info(f"\033[1;34m[+] Starting {tool}...\033[0m")
         p = start_proc(tool, host, logger, pool)
         procs.append(p)
 
@@ -101,8 +102,11 @@ def find_subdomains(host):
     for proc in procs:
         proc.get()
 
+    # use massdns to filter non-resolvable subdomains
+    p = start_proc("massdns", host, logger, pool)
+    p.get()
+
     # amass ingests outputs from other subdomain tools
-    logger.info(f"\033[1;34m[+] Starting amass...\033[0m")
     p = start_proc("amass", host, logger, pool)
     p.get()
 

@@ -13,6 +13,7 @@ RUN apt update --fix-missing \
 
 COPY --from=0 /go/bin/${TOOL} /bin/${TOOL}
 
+ADD config/config_template.ini /config_template.ini
 ADD config/run_tool.sh /etc/run_tool.sh
 ADD config/main.xinetd /etc/xinetd.d/main
 ADD config/run_xinetd.sh /etc/run_xinetd.sh
