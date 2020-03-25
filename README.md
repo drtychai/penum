@@ -71,22 +71,26 @@ psql -U postgres -d penum -c "<CUSTOM_QUERY>"
 - aquatone
 - nikto
 - nmap
+- gobuster
+- dirsearch
 
 ### Network Enumeration
 - nmap
 
 ## ToDo
 ### Network
+- Determine if network scans should be performed _after_ subdomain enumeration or _concurrently_ with it
 - Detect CIDR/ASN and expand range(s) to separate file for nmap consumption
 - Add nmap-parse-output support and sorting logic based on service
-- Add direct calls to shodan APIs
+- ~Add direct calls to shodan APIs~
 
 ### HTTP
 - Add in dirsearch/gobuster for inital spidering
 - (if possible) Look into possible integration for populating/producing a `.burp` with info
 
 ### Misc
-- Integrate custom recon-ng module
+- ~Integrate custom recon-ng module~
 - DB integration
-  - Create converter per tools output into DB JSON syntax
+  - Subdomain enumeration to DB: Write function that ingests amass JSON output and updates DB
+- Map out other core services and their port enumeration tools (e.g., SSH, DNS, SMB, RPC, SMTP, SNMP, etc.)
 - (Way down the road) Some way of visualizing data
