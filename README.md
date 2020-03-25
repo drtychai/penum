@@ -41,12 +41,14 @@ docker-compose down -v
 Backend functionality is queried through the Golang HTTP server at: `http://localhost:8080`
 
 ### Specific Functionality
-Enumerate against single FQDN/IP:
+Enumerate against single FQDN/IP: `./penum -d example.com`
+This is equivalent to:
 ```
 curl -X POST -d "<target_host1>" http://<hostname>[:<port>]
 ```
 
-Enumerate against newline-delineated list of FQDNs/IPs:
+Enumerate against newline-delineated list of FQDNs/IPs: `./penum -f /path/to/file`
+This is equivalent to:
 ```
 curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload
 ```
@@ -69,6 +71,7 @@ psql -U postgres -d penum -c "<CUSTOM_QUERY>"
 
 ### HTTP Enumeration
 - aquatone
+- httprobe
 - nikto
 - nmap
 - gobuster

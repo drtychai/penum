@@ -1,0 +1,70 @@
+#!/bin/bash
+# TODO: Add option for custom log location
+# TODO: Add functionality to verbose option
+
+
+# Colors
+L_GREEN='\033[1;32m'
+L_RED='\033[1;31m'
+NC='\033[0m' # No Color
+
+h_flag=''
+d_flag=''
+files=''
+verbose='false'
+
+log_info() {
+  local msg="$1"
+  echo -e "${L_GREEN}${msg}${nc}"
+}
+
+log_error() {
+  local msg="$1"
+  echo -e "${L_RED}${msg}${nc}"
+}
+
+print_usage() {
+  log_error "Usage: $0 [-h] [-d <SINGLE_HOST>] [-f <HOST_FILE>]"
+}
+
+start_single() {
+  local host="$1"
+  curl -X POST -d "${host}" http://localhost:8080 &
+  log_info "[+] Enumeration started on ${host}..."
+}
+
+start_file() {
+  local host_file="$1"
+  curl -F "uploadedfile=@${host_file}" http://localhost:8080/upload &
+  log_info "[+] Enumeration started on ${host_file}..."
+}
+
+while getopts 'd:f:hv' flag; do
+  case "${flag}" in
+    h)
+      print_usage
+      exit 1
+      ;;
+    d)
+      d_flag="${OPTARG}"
+      start_single ${d_flag}
+      exit 0
+      ;;
+    f)
+      files="${OPTARG}"
+      start_file ${files}
+      exit 0
+      ;;
+    v)
+      verbose='true'
+      ;;
+    :)
+      log_error "[-] Invalid usage. $0 requires an argument."
+      exit 1
+      ;;
+    *)
+      log_error "[-] Unexpected option: ${flag}. Use -h for help."
+      exit 1
+      ;;
+  esac
+done
