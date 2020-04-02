@@ -1,9 +1,33 @@
 #!/usr/bin/env python3
 from dns import resolver, reversename
 from multiprocessing import Pool
+from pytextbelt import Textbelt
 import psql_helper
 import socket
 import logging
+
+def init_logger(f_out):
+    # TODO: Make this into a logger class that can be imported
+    logger = logging.getLogger('penum')
+    logger.setLevel(logging.DEBUG)
+
+    # create file handler which logs even debug messages
+    fh = logging.FileHandler(f_out)
+    fh.setLevel(logging.DEBUG)
+
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.ERROR)
+
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+    return logger
 
 def tool_port_map(tool):
     mapping = {"amass":30000,
@@ -18,7 +42,7 @@ def tool_port_map(tool):
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, logger, pool):
-    logger.info(f"\033[1;34m[+] Starting {tool}...\033[0m")
+    logger.info(f"\033[1;34m[+] Starting {tool} on {host}...\033[0m")
     return pool.apply_async(run_service, args=(tool, host, logger))
 
 def run_service(tool, host, logger):
@@ -67,28 +91,9 @@ def reverseDNS(addr):
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
 
-    # TODO: Make this into a logger class that can be imported
-    logger = logging.getLogger('penum')
-    logger.setLevel(logging.DEBUG)
-
-    # create file handler which logs even debug messages
-    fh = logging.FileHandler('/logs/flask-api.log')
-    fh.setLevel(logging.DEBUG)
-
-    # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.ERROR)
-
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
-
-    # add the handlers to the logger
-    logger.addHandler(fh)
-    logger.addHandler(ch)
-
+    logger = init_logger("/logs/flask-api.log")
     pool = Pool()
+
     procs = []
     tools = ["subfinder", "sublist3r",
              "aiodnsbrute", "gobuster",
@@ -112,6 +117,11 @@ def find_subdomains(host):
 
     # update db with amass output
     #psql_helper.update_table("/output/subdomain/amass.json")
+
+    # send SMS
+    #Recipient = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
+    #response = Recipient.send("Done.")
+
     return
 
 def port_scan(host):
