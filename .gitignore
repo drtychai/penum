@@ -6,3 +6,5 @@ output/*
 .venv3/*
 api/__pycache__/*
 api/logs/*
+timing.txt
+api/pytextbelt.py
