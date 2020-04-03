@@ -9,6 +9,20 @@ Table Outline:
 |  asdf.co  |  asdf.co       |           |    ::    |   22      |      ssh       |    YYYY-MM-DD   |
 |  asdf.co  |  b.asdf.co     |           |    ::1   |   8080    |      http      |    YYYY-MM-DD   |
 
+```
+CREATE TYPE subdomain_type AS (
+    fqdn VARCHAR (50) NOT NULL,
+    ipv4 VARCHAR (50),
+    ipv6 VARCHAR (50),
+    open_port VARCHAR (10),
+    port_service VARCHAR (50),
+);
+
+CREATE TABLE domains (
+    subdomains subdomain_type[],
+    last_modified TIMESTAMP
+);
+```
 
 # Queries
 All queries are structed for python3, e.g.,

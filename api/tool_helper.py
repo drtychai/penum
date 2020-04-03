@@ -8,24 +8,17 @@ import logging
 
 def init_logger(f_out):
     logger = logging.getLogger('penum')
-    logger.setLevel(logging.DEBUG)
+    if (logger.hasHandlers()):
+        logger.handlers.clear()
 
-    # create file handler which logs even debug messages
+    logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
     fh = logging.FileHandler(f_out)
     fh.setLevel(logging.DEBUG)
-
-    # create console handler with a higher log level
-    #ch = logging.StreamHandler()
-    #ch.setLevel(logging.ERROR)
-
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
-    #ch.setFormatter(formatter)
 
-    # add the handlers to the logger
     logger.addHandler(fh)
-    #logger.addHandler(ch)
     return logger
 
 def tool_port_map(tool):
@@ -111,7 +104,7 @@ def find_subdomains(host):
     p.get()
 
     # update db with amass output
-    #psql_helper.update_table("/output/subdomain/amass.json")
+    psql_helper.update_subdomains("/output/subdomain/amass.json")
 
     # send SMS
     #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")

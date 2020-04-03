@@ -22,12 +22,9 @@ services:
         volumes:
             - ./www/src:/var/www
     db:
-        image: penum:psql
-        build: ./psql
-        restart: always
-        environment:
-            POSTGRES_USER: postgres
-            POSTGRES_DB: penum
+        image: postgres:latest
+        env_file:
+            - ./psql/config/database.env
         ports:
             - "5432:5432"
         volumes:
