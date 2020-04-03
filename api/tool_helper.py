@@ -94,9 +94,9 @@ def find_subdomains(host):
     pool = Pool()
 
     procs = []
-    tools = ["subfinder", "sublist3r",
-             "aiodnsbrute", "gobuster",
-             "recon-ng", "amass"]
+    tools = ["amass", "recon-ng",
+             "subfinder", "sublist3r",
+             "aiodnsbrute", "gobuster"]
 
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
