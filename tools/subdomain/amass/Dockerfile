@@ -21,6 +21,7 @@ ADD config/run_xinetd.sh /etc/run_xinetd.sh
 RUN chmod +x /etc/run_xinetd.sh
 RUN chmod +x /etc/run_tool.sh
 
+RUN mkdir -p /log && chmod -R 700 /log
 RUN mkdir -p /${TOOL_OUT} && chmod -R 700 /${TOOL_OUT}
 
 RUN service xinetd restart

@@ -8,7 +8,7 @@ TOOL_OUT="/output/subdomain"
 cp /config_template.ini /config.ini
 # Add any special config params here
 
-amass enum -config /config.ini -d ${host} -o ${TOOL_OUT}/amass-${host}.out
+amass enum -config /config.ini -d ${host} -log /log/${host}.log -o ${TOOL_OUT}/amass-${host}.out
 
 # Cleanup
 rm /config.ini
