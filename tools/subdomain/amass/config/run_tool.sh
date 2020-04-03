@@ -6,11 +6,9 @@ TOOL_OUT="/output/subdomain"
 
 # Make amass config.ini in real-time using results from tool outputs
 cp /config_template.ini /config.ini
-if [ -f "${TOOL_OUT}/all-subdomains-${host}.out" ];then
-    cat ${TOOL_OUT}/all-subdomains.${host}.out >> /config.ini
-fi
+# Add any special config params here
 
-amass enum -ip -config /config.ini -d ${host} -json ${TOOL_OUT}/amass-0-${host}.json -dir /amass-0-${host}
+amass enum -config /config.ini -d ${host} -o ${TOOL_OUT}/amass-${host}.out
 
 # Cleanup
 rm /config.ini

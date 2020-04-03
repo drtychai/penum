@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 ENV TOOL massdns
-ENV TOOL_OUT output/subdomain
+
 RUN apt update --fix-missing \
     && apt install -y libldns-dev git build-essential python
 
@@ -14,7 +14,7 @@ RUN apt update --fix-missing \
 
 COPY --from=0 /massdns/bin/${TOOL} /bin/${TOOL}
 
-ADD ./wordlists/resolvers.txt /resolvers.txt
+ADD ./wordlists/ns.txt /resolvers.txt
 ADD ./wordlists/subdomains-top1million-110000.txt /wl.txt
 
 ADD config/run_tool.sh /etc/run_tool.sh
@@ -25,6 +25,5 @@ RUN chmod +x /etc/run_xinetd.sh
 RUN chmod +x /etc/run_tool.sh
 
 RUN mkdir -p /massdns-output && chmod -R 700 /massdns-output
-#RUN mkdir -p /${TOOL_OUT} && chmod -R 700 /output
 
 RUN service xinetd restart

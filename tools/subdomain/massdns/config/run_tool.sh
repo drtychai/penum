@@ -9,14 +9,17 @@ cat ${TOOL_OUT}/*-${host}.out >> ${M_DNS_OUT}/massdns-${host}.tmp
 cat ${M_DNS_OUT}/massdns-${host}.tmp | sort -u > ${M_DNS_OUT}/massdns-${host}.sorted
 
 # Resolve IPv4
-massdns --processes 50 -r /resolvers.txt -t A --verify-ip -o S -w ${M_DNS_OUT}/massdns-v4-${host}.out ${M_DNS_OUT}/massdns-${host}.sorted
+RESOLVE_RETRIES=255
+RATE=100000
+
+massdns --processes 8 --hashmap-size ${RATE} --resolve-count ${RESOLVE_RETRIES} -r /resolvers.txt \
+        -t A --verify-ip -o J -w ${M_DNS_OUT}/massdns-v4-${host}.out ${M_DNS_OUT}/massdns-${host}.sorted
 
 # Resolve IPv6
-massdns --processes 50 -r /resolvers.txt -t AAAA --verify-ip -o S -w ${M_DNS_OUT}/massdns-v6-${host}.out ${M_DNS_OUT}/massdns-${host}.sorted
+massdns --processes 8 --hashmap-size ${RATE} --resolve-count ${RESOLVE_RETRIES} -r /resolvers.txt \
+        -t AAAA --verify-ip -o J -w ${M_DNS_OUT}/massdns-v6-${host}.out ${M_DNS_OUT}/massdns-${host}.sorted
 
-cat ${M_DNS_OUT}/massdns-v?-${host}.out* > ${M_DNS_OUT}/massdns-all-${host}.out
-cat ${M_DNS_OUT}/massdns-all-${host}.out | cut -d ' ' -f 1 | sort -u > ${TOOL_OUT}/all-subdomains-${host}.out
-sed -i 's/.$//g' ${TOOL_OUT}/all-subdomains-${host}.out
+cat ${M_DNS_OUT}/massdns-v?-${host}.out* > ${TOOL_OUT}/massdns-${host}.json
 
 # Cleanup
 rm ${M_DNS_OUT}/*.tmp

@@ -7,7 +7,6 @@ import socket
 import logging
 
 def init_logger(f_out):
-    # TODO: Make this into a logger class that can be imported
     logger = logging.getLogger('penum')
     logger.setLevel(logging.DEBUG)
 
@@ -16,17 +15,17 @@ def init_logger(f_out):
     fh.setLevel(logging.DEBUG)
 
     # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.ERROR)
+    #ch = logging.StreamHandler()
+    #ch.setLevel(logging.ERROR)
 
     # create formatter and add it to the handlers
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
+    #ch.setFormatter(formatter)
 
     # add the handlers to the logger
     logger.addHandler(fh)
-    logger.addHandler(ch)
+    #logger.addHandler(ch)
     return logger
 
 def tool_port_map(tool):
@@ -97,7 +96,7 @@ def find_subdomains(host):
     procs = []
     tools = ["subfinder", "sublist3r",
              "aiodnsbrute", "gobuster",
-             "recon-ng"]
+             "recon-ng", "amass"]
 
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
@@ -111,17 +110,12 @@ def find_subdomains(host):
     p = start_proc("massdns", host, logger, pool)
     p.get()
 
-    # amass ingests outputs from other subdomain tools
-    p = start_proc("amass", host, logger, pool)
-    p.get()
-
     # update db with amass output
     #psql_helper.update_table("/output/subdomain/amass.json")
 
     # send SMS
-    #Recipient = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
-    #response = Recipient.send("Done.")
-
+    #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
+    #sms_client.send("Done.")
     return
 
 def port_scan(host):
