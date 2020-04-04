@@ -83,6 +83,10 @@ def reverseDNS(addr):
 def find_subdomains(host):
     """Main controller for subdomain enumeration tools."""
 
+    # Check if db is initialized
+    if not psql_helper.is_init():
+        psql_helper.init()
+
     logger = init_logger("/logs/flask-api.log")
     pool = Pool()
 
@@ -91,6 +95,7 @@ def find_subdomains(host):
              "subfinder", "sublist3r",
              "aiodnsbrute", "gobuster"]
 
+    logger.info("-"*50)
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
         procs.append(p)
@@ -104,11 +109,15 @@ def find_subdomains(host):
     p.get()
 
     # update db with amass output
-    psql_helper.update_subdomains("/output/subdomain/amass.json")
+    logger.info(f"\033[1;34m[+] Updating database with subdomains of {host}...\033[0m")
+    psql_helper.update_subdomains(f"/output/subdomain/subdomains-{host}.json")
+    logger.info(f"\033[1;32m[+] Database update complete...\033[0m")
 
     # send SMS
     #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
     #sms_client.send("Done.")
+    sms_client = Textbelt.Recipient("4408569884", "us")
+    sms_client.send("Done.")
     return
 
 def port_scan(host):

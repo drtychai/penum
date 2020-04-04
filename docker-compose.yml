@@ -2,6 +2,10 @@ version: '3'
 volumes:
     db-vol:
     out-vol:
+networks:
+   dbn:
+   tn:
+   wn:
 services:
     api:
         image: penum:api
@@ -9,9 +13,13 @@ services:
         ports:
             - "5000:5000"
         volumes:
-            - out-vol:/output
-            - db-vol:/var/lib/postgresql/data
             - ./api/logs:/logs
+            - out-vol:/output
+            - db-vol:/psql
+        networks:
+            - dbn
+            - tn
+            - wn
     web:
         image: penum:www
         build: ./www
@@ -21,105 +29,132 @@ services:
             - "8080:8080"
         volumes:
             - ./www/src:/var/www
+        networks:
+            - wn
     db:
-        image: postgres:latest
-        env_file:
-            - ./psql/config/database.env
+        image: postgres:alpine
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: penum
+            POSTGRES_HOST: pg.example_net
+            POSTGRES_PORT: 5432
+            PGDATA: /var/lib/postgresql/data/pnm-db
         ports:
             - "5432:5432"
         volumes:
-            - db-vol:/var/lib/postgresql/data
+            - db-vol:/var/lib/postgresql/data/pnm-db
+        networks:
+            - dbn
     amass:
         image: penum:amass
         build: ./tools/subdomain/amass
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30000"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     subfinder:
         image: penum:subfinder
         build: ./tools/subdomain/subfinder
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30001"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     aiodnsbrute:
         image: penum:aiodnsbrute
         build: ./tools/subdomain/aiodnsbrute
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30002"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     sublist3r:
         image: penum:sublist3r
         build: ./tools/subdomain/sublist3r
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30003"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     gobuster:
         image: penum:gobuster
         build: ./tools/subdomain/gobuster
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30004"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     massdns:
         image: penum:massdns
         build: ./tools/subdomain/massdns
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30005"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     recon-ng:
         image: penum:recon-ng
         build: ./tools/subdomain/recon-ng
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         environment:
             RECON_HOME: /.recon-ng
         ports:
             - "30006"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     aquatone:
         image: penum:aquatone
         build: ./tools/http/aquatone
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30007"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
     nmap:
         image: penum:nmap
         build: ./tools/network/nmap
         working_dir: /
+        entrypoint: /etc/run_xinetd.sh
         ports:
             - "30008"
-        entrypoint: /etc/run_xinetd.sh
         volumes:
             - out-vol:/output
+        networks:
+            - tn
         read_only: false
 
 

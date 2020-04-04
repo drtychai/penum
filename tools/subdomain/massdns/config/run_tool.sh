@@ -19,7 +19,8 @@ massdns --processes 8 --hashmap-size ${RATE} --resolve-count ${RESOLVE_RETRIES} 
 massdns --processes 8 --hashmap-size ${RATE} --resolve-count ${RESOLVE_RETRIES} -r /resolvers.txt \
         -t AAAA --verify-ip -o J -w ${M_DNS_OUT}/massdns-v6-${host}.out ${M_DNS_OUT}/massdns-${host}.sorted
 
-cat ${M_DNS_OUT}/massdns-v?-${host}.out* > ${TOOL_OUT}/massdns-${host}.json
+cat ${M_DNS_OUT}/massdns-v?-${host}.out* > ${M_DNS_OUT}/massdns-${host}.json
+jq -s "{\"domain\": \"${host}\", \"subdomains\":.}" ${M_DNS_OUT}/massdns-${host}.json > ${TOOL_OUT}/subdomains-${host}.json
 
 # Cleanup
 rm ${M_DNS_OUT}/*.tmp
