@@ -116,8 +116,6 @@ def find_subdomains(host):
     # send SMS
     #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
     #sms_client.send("Done.")
-    sms_client = Textbelt.Recipient("4408569884", "us")
-    sms_client.send("Done.")
     return
 
 def port_scan(host):
