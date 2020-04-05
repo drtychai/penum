@@ -1,5 +1,8 @@
 # Parallel Enumerator
-Current branch still in progress. Functionality is equivalent to `master`.
+_This project is still in progress._
+
+The current [master](https://github.com/drtychai/penum/tree/master) branch version performes the
+full subdomain enumeration, with JSON output to `./api/logs/subdomains-<tld>.json`
 
 This is an *active* enumerator. We take no responsibility for how or where this is used.
 
@@ -11,9 +14,10 @@ Give a host or list of hosts, the following actions are performed in this order:
     - `aiodnsbrute`
     - `gobuster`
     - `recon-ng`
-1. Subdomains resolved via `massDNS` then ingested by `amass` for final round of subdomain discovery.
-1. DNS flyover to discover, screenshot, and output list of HTTP servers via `aquatone`
-1. Scan all valid HTTP servers via `nikto`
+    - `amass`
+1. Subdomains resolved via `massDNS` (saved in database)
+1. [Not implemented] DNS flyover to discover, screenshot, and output list of HTTP servers via `aquatone`
+1. [Not implemented] Scan all valid HTTP servers via `nikto`
 
 ## Installation
 penum requires `docker` and `docker-compose` be installed on the host.
@@ -41,21 +45,23 @@ docker-compose down -v
 Backend functionality is queried through the Golang HTTP server at: `http://localhost:8080`
 
 ### Specific Functionality
-Enumerate against single FQDN/IP: `./penum -d example.com`
-This is equivalent to:
+Enumerate against single FQDN/IP:
 ```
-curl -X POST -d "<target_host1>" http://<hostname>[:<port>]
+./penum -d example.com
 ```
+This is equivalent to: `curl -X POST -d "<target_host1>" http://<hostname>[:<port>]`
 
-Enumerate against newline-delineated list of FQDNs/IPs: `./penum -f /path/to/file`
-This is equivalent to:
+
+Enumerate against newline-delineated list of FQDNs/IPs:
 ```
-curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload
+./penum -f /path/to/file
 ```
+This is equivalent to: `curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload`
+
 
 Custom DB query:
 ```
-psql -U postgres -d penum -c "<CUSTOM_QUERY>"
+psql -U postgres --password postgres -d penum -c "<CUSTOM_QUERY>"
 ```
 
 
@@ -93,7 +99,8 @@ psql -U postgres -d penum -c "<CUSTOM_QUERY>"
 
 ### Misc
 - ~Integrate custom recon-ng module~
-- DB integration
-  - Subdomain enumeration to DB: Write function that ingests amass JSON output and updates DB
+- DB integration for:
+  - ~Subdomain enumeration to DB: Write function that ingests amass JSON output and updates DB~
+  - HTTP enumeration
 - Map out other core services and their port enumeration tools (e.g., SSH, DNS, SMB, RPC, SMTP, SNMP, etc.)
 - (Way down the road) Some way of visualizing data
