@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from recon.core import base
+from multiprocessing import Pool
 import argparse
 import datetime
 import os
@@ -50,9 +51,11 @@ def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
                    "recon/domains-hosts/shodan_hostname", "recon/netblocks-companies/whois_orgs", "recon/domains-hosts/netcraft"]
     install_modules(reconb, module_list + [f"{bf_module}",f"{report_module}"])
 
+    pool = Pool()
     for domain in domains:
         for module in module_list:
-            run_module(reconb, module, domain)
+            p = pool.apply_async(run_module, args=(reconb, module, domain))
+            procs.append(p)
 
         # subdomain bruteforcing if wordlist set
         m = reconb._do_modules_load(bf_module)
@@ -66,6 +69,10 @@ def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
             m.options['filename'] = out_file
             m.options['column'] = "host"
             m.do_run(None)
+
+    # wait until all pool processes complete
+    for proc in procs:
+        proc.get()
 
     if is_altdns_set:
         run_altdns(domains)

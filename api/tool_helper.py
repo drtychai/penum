@@ -4,22 +4,6 @@ from multiprocessing import Pool
 from pytextbelt import Textbelt
 import psql_helper
 import socket
-import logging
-
-def init_logger(f_out):
-    logger = logging.getLogger('penum')
-    if (logger.hasHandlers()):
-        logger.handlers.clear()
-
-    logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-    fh = logging.FileHandler(f_out)
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(formatter)
-
-    logger.addHandler(fh)
-    return logger
 
 def tool_port_map(tool):
     mapping = {"amass":30000,
@@ -80,16 +64,14 @@ def reverseDNS(addr):
     qname = reversename.from_address(addr)
     return str(resolver.query(qname, 'PTR')[0])[:-1]
 
-def find_subdomains(host):
+def find_subdomains(host, logger):
     """Main controller for subdomain enumeration tools."""
 
     # Check if db is initialized
     if not psql_helper.is_init():
         psql_helper.init()
 
-    logger = init_logger("/logs/flask-api.log")
     pool = Pool()
-
     procs = []
     tools = ["amass", "recon-ng",
              "subfinder", "sublist3r",
@@ -110,7 +92,7 @@ def find_subdomains(host):
 
     # update db with amass output
     logger.info(f"\033[1;34m[+] Updating database with subdomains of {host}...\033[0m")
-    psql_helper.update_subdomains(f"/output/subdomain/subdomains-{host}.json")
+    psql_helper.update_subdomains(f"/output/subdomain/subdomains-{host}.json", logger)
     logger.info(f"\033[1;32m[+] Database update complete...\033[0m")
 
     # send SMS

@@ -10,7 +10,7 @@ RUN git clone https://github.com/blechschmidt/massdns.git /${TOOL} \
 FROM ubuntu:18.04
 ENV TOOL massdns
 RUN apt update --fix-missing \
-    && apt -y install xinetd jq
+    && apt -y install xinetd jq parallel
 
 COPY --from=0 /massdns/bin/${TOOL} /bin/${TOOL}
 

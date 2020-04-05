@@ -6,23 +6,38 @@ from tool_helper import *
 from multiprocessing import Pool, Process
 import socket
 import xmltodict, json
+import logging
+import time
+
+def init_logger(f_out):
+    logger = logging.getLogger('penum')
+    if (logger.hasHandlers()):
+        logger.handlers.clear()
+
+    logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    fh = logging.FileHandler(f_out)
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(formatter)
+
+    logger.addHandler(fh)
+    return logger
+
+### Flask
 
 app = Flask(__name__)
-
 @app.route("/")
 def index():
-    usage="""Usage:
-    Run penum: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api
-    Run specific tool: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/<tool>
-
-    Get penum results: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output
-    Get specific tool results: curl -X POST -H "Content-Type: application/json" -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api/output/<tool>
-    """
+    usage="""Usage: curl -X POST -H "Content-Type: application/json"
+                         -d '{"Hosts":["<target_host1>","<target_host2>",...,"<target_hostN>"]}' http://<hostname>[:<port>]/api"""
     return usage
 
 @app.route("/", methods=['POST'])
 def api():
     """Main endpoint to kick of enumeration."""
+    s_time = time.perf_counter()
+    logger = init_logger("/logs/flask-api.log")
     try:
         hosts = request.json['Hosts']
         for host in hosts:
@@ -32,59 +47,13 @@ def api():
                 #port_scan(host)
                 find_subdomains(reverseDNS(host))
             except socket.error:
-                find_subdomains(host)
+                find_subdomains(host, logger)
         return f"penum started on the following hosts: {hosts}"
     except TypeError:
         raise TypeError("Content-Type header required.")
-
-@app.route("/<path:tool>", methods=['POST'])
-def api_tool(tool):
-    """Proxy any tool server. Returns JSON ouput."""
-    try:
-        hosts = request.json['Hosts']
-        for host in hosts:
-            run_service(tool, host)
-        return f"{tool} ran on the following hosts: {hosts}"
-    except TypeError:
-        raise TypeError("Content-Type header required.")
-
-@app.route("/output", methods=['POST'])
-def api_output():
-    """Return JSON of unique list from all tool outputs."""
-    tools = ["amass", "subfinder"]
-    hosts = request.json['Hosts']
-    output = []
-    # TODO: Fix this nested silliness
-    for host in hosts:
-        for tool in tools:
-            try:
-                output += get_output(tool, host)
-            except FileNotFoundError:
-                pass
-    return jsonify(domain=host, subdomains=list(dict.fromkeys(output)))
-
-@app.route("/output/<path:tool>", methods=['POST'])
-def api_tool_ouput(tool):
-    """Return JSON of given tool output."""
-    hosts = request.json['Hosts']
-    output = []
-    for host in hosts:
-        try:
-            output += get_output(tool, host)
-        except FileNotFoundError:
-            pass
-    return jsonify(subdomains=list(dict.fromkeys(output)))
-
-@app.route("/output/nmap", methods=['POST'])
-def api_nmap_output():
-    """"Return JSON of nmap output."""
-    addr = request.json['addr'][0]
-    try:
-        nmap_dict = xmltodict.parse(get_output("nmap", addr))
-        ret = json.dumps(nmap_dict)
-    except Exception as e:
-        nmap_dict = get_output("nmap", addr)
-        ret = jsonify(results=json.dumps(nmap_dict))
-    return ret
+    finally:
+        elapsed = time.perf_counter() - s_time
+        logger.info(f"\033[0;34m[+]{__file__} executed in {elapsed:0.2f} seconds.\033[0m")
+    return
 
 app.run(host="0.0.0.0")

@@ -31,57 +31,48 @@ def is_init():
 def init():
     """Connect to DB and initialize table."""
     print("[+] Initializing database...")
-    q = """CREATE TYPE subdomain_type AS (
-               fqdn text,
-               ipv4 text,
-               ipv6 text,
-               open_port integer,
-               port_service text
-           );
-
-           CREATE TABLE output (
+    q = """CREATE TABLE output (
                domain text UNIQUE NOT NULL,
-               subdomains subdomain_type[],
+               subdomains jsonb,
                last_modified TIMESTAMP NOT NULL
            );"""
     query(q)
     return
 
-def is_cached(host):
+def has_initial_entry(host):
     """Boolean function to determine if domain has been enumerated."""
-    cached = False
-    q = "SELECT * from output WHERE domain LIKE '%s'", host
-    rows = query(q)
-    if len(rows) > 1:
-        cached = True
-    return cached
+    has_entry = False
+    q = """SELECT domain FROM output WHERE domain = '%s';""" % host
+    is_empty = not query(q)
+    if not is_empty:
+        has_entry = True
+    return has_entry
 
-def update_subdomains(filename):
+
+def update_subdomains(filename, logger):
     """Take data in filename and insert into DB."""
     with open(filename) as f:
-        subdomains_json = json.load(f)
-    domain = subdomains_json['domain']
-    sd_objs = subdomains_json['subdomains'] #array of dicts
+        new_subdomains = json.load(f)
+    domain = new_subdomains['domain']
 
-    # Check if host has entry. Create one if not.
-    q = """SELECT domain FROM output WHERE domain = '%s';""" % domain
-    is_empty = not query(q)
-    if is_empty:
-        q = """INSERT INTO output (domain, last_modified) values ('%s',now());""" % domain
-        query(q)
+    # Check if host has entry
+    q = """SELECT subdomains FROM output WHERE domain = '%s';"""
+    saved_subdomains = query(q % domain)
+    if saved_subdomains:
+        sd_json = saved_subdomains[0][0]
+        sd_json['subdomain'].extend(new_subdomains['subdomain'])
+    else:
+        sd_json = new_subdomains
 
-    # Append subdomain_type into array
-    q = """UPDATE output SET subdomains = array_cat(subdomains, '{"(%s,%s,%s,%d,%s)"}'), last_modified = now() WHERE domain = '%s';"""
-    for sd_obj in sd_objs:
-        # skip loop interation if no ip addr
-        if sd_obj['status'] == "NXDOMAIN" or 'answers' not in sd_obj['data']:
-            continue
+    if not has_initial_entry(domain):
+        q = """INSERT INTO output (domain, last_modified) values ('%s',now());"""
+        query(q % domain)
 
-        fqdn = sd_obj['name']
-        ip_objs = sd_obj['data']['answers']
-        for ip_obj in ip_objs:
-            ip = ip_obj['data']
-            query(q % (fqdn, ip, '::', 443, 'https', domain))
+    q = """UPDATE output SET subdomains = '%s', last_modified = now() WHERE domain = '%s';"""
+    query(q % (json.dumps(sd_json), domain))
+
+    with open(f"/logs/subdomains-{domain}.json", 'w') as outfile:
+        json.dump(sd_json, outfile)
+
+    logger.info(f"\033[1;32m[+] Updated JSON saved to ./api/logs/subdomains-{domain}.json\033[0m")
     return
-
-
