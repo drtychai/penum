@@ -1,0 +1,3 @@
+[submodule "api/pytextbelt"]
+	path = api/pytextbelt
+	url = https://github.com/ksdme/py-textbelt.git
