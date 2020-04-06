@@ -2,14 +2,16 @@ FROM golang:1.13.7
 ENV GOOS linux
 ENV GOARCH amd64
 ENV GOPATH /go
-RUN go get -v -u github.com/michenriksen/aquatone/
+RUN go get -v -u github.com/tomnomnom/httprobe
 
 FROM ubuntu:18.04
-ENV TOOL aquatone
+ENV TOOL httprobe
 RUN apt update --fix-missing \
-    && apt install -y xinetd chromium-browser jq
+    && apt install -y xinetd jq
 
 COPY --from=0 /go/bin/${TOOL} /bin/${TOOL}
+
+ADD wordlists/common-http-ports.txt /ports.txt
 
 ADD config/run_tool.sh /etc/run_tool.sh
 ADD config/main.xinetd /etc/xinetd.d/main

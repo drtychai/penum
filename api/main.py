@@ -4,6 +4,7 @@ from flask import request
 from flask import jsonify
 from tool_helper import *
 from multiprocessing import Pool, Process
+from pytextbelt import Textbelt
 import socket
 import xmltodict, json
 import logging
@@ -41,13 +42,19 @@ def api():
     try:
         hosts = request.json['Hosts']
         for host in hosts:
-            # Only port scan if host has IP addr
+            # Subdomain enumeration
             try:
                 socket.inet_aton(host)
-                #port_scan(host)
-                find_subdomains(reverseDNS(host))
+                find_subdomains(reverseDNS(host), logger)
             except socket.error:
                 find_subdomains(host, logger)
+
+            # HTTP enumeration
+            http_enum(host, logger)
+
+        # send SMS
+        #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
+        #sms_client.send("Done.")
         return f"penum started on the following hosts: {hosts}"
     except TypeError:
         raise TypeError("Content-Type header required.")

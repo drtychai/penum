@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from dns import resolver, reversename
 from multiprocessing import Pool
-from pytextbelt import Textbelt
 import psql_helper
 import socket
 
@@ -14,7 +13,8 @@ def tool_port_map(tool):
                "massdns":30005,
                "recon-ng":30006,
                "aquatone":30007,
-               "nmap":30008}
+               "httprobe":30008,
+               "nmap":30009}
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, logger, pool):
@@ -60,6 +60,12 @@ def check_cache(host):
     # TODO: check if file names exists
     return result
 
+def port_scan(host):
+    """"Main controller for IP / Network enumeration."""
+    pool = Pool()
+    start_proc("nmap", host, None, pool)
+    return
+
 def reverseDNS(addr):
     qname = reversename.from_address(addr)
     return str(resolver.query(qname, 'PTR')[0])[:-1]
@@ -94,14 +100,25 @@ def find_subdomains(host, logger):
     logger.info(f"\033[1;34m[+] Updating database with subdomains of {host}...\033[0m")
     psql_helper.update_subdomains(f"/output/subdomain/subdomains-{host}.json", logger)
     logger.info(f"\033[1;32m[+] Database update complete...\033[0m")
-
-    # send SMS
-    #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
-    #sms_client.send("Done.")
     return
 
-def port_scan(host):
-    """"Main controller for IP / Network enumeration."""
+def http_enum(host, logger):
+    """Main controler for HTTP enumeration tools."""
     pool = Pool()
-    start_proc("nmap", host, None, pool)
+    procs = []
+    tools = ["aquatone", "httprobe"]
+
+    logger.info("\033[0;32[+] Beginning HTTP enumeration...\033[0m")
+    for tool in tools:
+        p = start_proc(tool, host, logger, pool)
+        procs.append(p)
+
+    for proc in procs:
+        proc.get()
+
     return
+
+
+
+
+

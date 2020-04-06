@@ -11,7 +11,7 @@ services:
         image: penum:api
         build: ./api
         ports:
-            - "5000:5000"
+            - "5000"
         volumes:
             - ./api/logs:/logs
             - out-vol:/output
@@ -135,10 +135,22 @@ services:
     aquatone:
         image: penum:aquatone
         build: ./tools/http/aquatone
-        working_dir: /
+        working_dir: /aquatone
         entrypoint: /etc/run_xinetd.sh
         ports:
             - "30007"
+        volumes:
+            - out-vol:/output
+        networks:
+            - tn
+        read_only: false
+    httprobe:
+        image: penum:httprobe
+        build: ./tools/http/httprobe
+        working_dir: /httprobe
+        entrypoint: /etc/run_xinetd.sh
+        ports:
+            - "30008"
         volumes:
             - out-vol:/output
         networks:
@@ -150,7 +162,7 @@ services:
         working_dir: /
         entrypoint: /etc/run_xinetd.sh
         ports:
-            - "30008"
+            - "30009"
         volumes:
             - out-vol:/output
         networks:

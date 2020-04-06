@@ -10,19 +10,42 @@ Table Outline:
 |  asdf.co  |  b.asdf.co     |           |    ::1   |   8080    |      http      |    YYYY-MM-DD   |
 
 ```
-CREATE TYPE subdomain_type AS (
-    fqdn VARCHAR (50) NOT NULL,
-    ipv4 VARCHAR (50),
-    ipv6 VARCHAR (50),
-    open_port VARCHAR (10),
-    port_service VARCHAR (50),
-);
-
 CREATE TABLE domains (
-    subdomains subdomain_type[],
+    domain text,
+    subdomains jsonb,
     last_modified TIMESTAMP
 );
 ```
+
+=> Probably a good idea to separate each wave into it's own table:
+- `subddomain`:
+```
+CREATE TABLE subdomain (
+    domain text,
+    subdomains jsonb,
+    last_modified TIMESTAMP
+);
+```
+
+- `http`:
+```
+CREATE TABLE http (
+    domain text,
+    webservers jsonb,
+    last_modified TIMESTAMP
+);
+```
+
+- `ssh`: domain => ssh servers
+```
+CREATE TABLE ssh (
+    domain text,
+    sshservers jsonb,
+    last_modified TIMESTAMP
+);
+```
+
+- etc.
 
 # Queries
 All queries are structed for python3, e.g.,
