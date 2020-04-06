@@ -14,7 +14,8 @@ def tool_port_map(tool):
                "recon-ng":30006,
                "aquatone":30007,
                "httprobe":30008,
-               "nmap":30009}
+               "wart":30009,
+               "nmap":30010}
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, logger, pool):
@@ -108,7 +109,7 @@ def http_enum(host, logger):
     procs = []
     tools = ["aquatone", "httprobe"]
 
-    logger.info("\033[0;32[+] Beginning HTTP enumeration...\033[0m")
+    logger.info("\033[0;32m[+] Beginning HTTP enumeration...\033[0m")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
         procs.append(p)

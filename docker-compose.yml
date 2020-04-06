@@ -156,6 +156,18 @@ services:
         networks:
             - tn
         read_only: false
+    wart:
+        image: penum:wart
+        build: ./tools/http/wart
+        working_dir: /wart
+        entrypoint: /etc/run_xinetd.sh
+        ports:
+            - "30009"
+        volumes:
+            - out-vol:/output
+        networks:
+            - tn
+        read_only: false
     nmap:
         image: penum:nmap
         build: ./tools/network/nmap
