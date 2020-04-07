@@ -93,7 +93,8 @@ def http_enum(host, logger):
     procs = []
     tools = ["aquatone", "httprobe"]
 
-    logger.info("[+] Beginning HTTP enumeration...")
+    logger.info("[+] Launching wave two...")
+    logger.debug("[*] Beginning HTTP enumeration...")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
         procs.append(p)
@@ -119,8 +120,17 @@ def http_enum(host, logger):
         for webserver in webserver_lst:
             f.write(f"{webserver}\n")
 
-    p = start_proc("wart", host, logger, pool)
-    p.get()
+    procs = []
+    tools = ["dirsearch","nikto","wart"]
+    logger.info("[+] Launching wave three...")
+    for tool in tools:
+        p = start_proc(tool, host, logger, pool)
+        procs.append(p)
+
+    # wait until all pool processes complete
+    for proc in procs:
+        proc.get()
+
 
     return
 

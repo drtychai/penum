@@ -168,17 +168,42 @@ services:
         networks:
             - tn
         read_only: false
+    nikto:
+        image: penum:nikto
+        build: ./tools/http/nikto
+        working_dir: /nikto
+        entrypoint: /etc/run_xinetd.sh
+        ports:
+            - "30010"
+        volumes:
+            - out-vol:/output
+        networks:
+            - tn
+        read_only: false
+    dirsearch:
+        image: penum:dirsearch
+        build: ./tools/http/dirsearch
+        working_dir: /dirsearch
+        entrypoint: /etc/run_xinetd.sh
+        ports:
+            - "30011"
+        volumes:
+            - out-vol:/output
+        networks:
+            - tn
+        read_only: false
     nmap:
         image: penum:nmap
         build: ./tools/network/nmap
         working_dir: /
         entrypoint: /etc/run_xinetd.sh
         ports:
-            - "30009"
+            - "30011"
         volumes:
             - out-vol:/output
         networks:
             - tn
         read_only: false
+
 
 
