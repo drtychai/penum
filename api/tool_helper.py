@@ -117,7 +117,7 @@ def http_enum(host, logger):
         if fqdn not in uniq_servers: # not a duplicate
             servers.append(line)
 
-    with open(F"/output/http/{host}/webserver-{host}.txt", "w") as f:
+    with open(F"/output/http/{host}/webservers-{host}.txt", "w") as f:
         for server in servers:
             f.write(server)
 
