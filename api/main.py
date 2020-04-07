@@ -75,14 +75,16 @@ def api():
         hosts = request.json['Hosts']
         for host in hosts:
             # Subdomain enumeration
+            logger.info(f"{RESET_SEQ}" + "-"*50)
             try:
                 socket.inet_aton(host)
-                find_subdomains(reverseDNS(host), logger)
+            #    find_subdomains(reverseDNS(host), logger)
             except socket.error:
-                find_subdomains(host, logger)
+            #    find_subdomains(host, logger)
+                continue
 
             # HTTP enumeration
-            http_enum(host, logger)
+            #http_enum(host, logger)
 
         # send SMS
         #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
@@ -92,7 +94,7 @@ def api():
         raise TypeError("Content-Type header required.")
     finally:
         elapsed = time.perf_counter() - s_time
-        logger.info(f"{RESET_SEQ}\033[{COLORS['LGREEN']}m[+] penum executed in {elapsed:0.2f} seconds.")
+        logger.info(f"{RESET_SEQ}{COLOR_SEQ % COLORS['LGREEN']}[+] penum executed in {elapsed:0.2f} seconds.")
     return
 
 app.run(host="0.0.0.0")

@@ -69,7 +69,6 @@ def find_subdomains(host, logger):
              "subfinder", "sublist3r",
              "aiodnsbrute", "gobuster"]
 
-    logger.info("\033[0m-"*50)
     logger.info("[+] Launching wave one...")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
