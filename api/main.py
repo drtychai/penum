@@ -78,13 +78,12 @@ def api():
             logger.info(f"{RESET_SEQ}" + "-"*50)
             try:
                 socket.inet_aton(host)
-            #    find_subdomains(reverseDNS(host), logger)
+                find_subdomains(reverseDNS(host), logger)
             except socket.error:
-            #    find_subdomains(host, logger)
-                continue
+                find_subdomains(host, logger)
 
             # HTTP enumeration
-            #http_enum(host, logger)
+            http_enum(host, logger)
 
         # send SMS
         #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
