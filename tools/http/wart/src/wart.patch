@@ -1,6 +1,6 @@
---- a/wart.py	2020-04-06 17:20:13.000000000 -0700
-+++ b/wart.py	2020-04-06 17:18:38.000000000 -0700
-@@ -6,10 +6,24 @@
+--- wart.py.original	2020-04-07 00:23:33.000000000 -0700
++++ wart.py	2020-04-07 00:23:04.000000000 -0700
+@@ -6,11 +6,22 @@
  from plugins.RobotsPlugin import RobotsPlugin
  from plugins.SiteInfoPlugin import SiteInfoPlugin
  import urllib3
@@ -10,23 +10,22 @@
  urllib3.disable_warnings()
  
 -target_urls = ["http://example.com"]
+-
 +#target_urls = ["http://reddit.com"]
 +if len(sys.argv) < 2:
 +    print(f"Usage: {sys.argv[0]} <url-file>")
 +    sys.exit(2)
 +
 +f_in = f"{sys.argv[1]}"
-+target_urls = []
-+with open(f_in, 'r') as f:
-+    target_urls = f.read().splitlines()
++target_urls = [line.rstrip('\n') for line in open(f_in)]
 +
 +# Extract TLD
 +p = re.compile(r'\w+.[A-Za-z]{2,3}')
-+tld = p.findall(target_urls[0])[0]
- 
++tld = p.findall(target_urls[0])[1]
  results = []
  
-@@ -44,8 +58,6 @@
+ for idx, url in enumerate(target_urls):
+@@ -44,8 +55,6 @@
      results.append(target.dict())
  
  

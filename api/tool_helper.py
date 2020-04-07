@@ -105,20 +105,19 @@ def http_enum(host, logger):
     p = re.compile(r'/.*.[A-Za-z]{2,3}')
     uniq_servers = []
     servers = []
-    with open(f"/output/http/{host}/aquatone/aquatone_urls.txt", 'r') as f_in:
-        servers = f_in.read().splitlines()
 
-    for server in servers:
-        uniq_servers.append(p.findall(server)[0][2:])
+    webserver_lst = [line.rstrip('\n') for line in open(f"/output/http/{host}/aquatone/aquatone_urls.txt")]
+    for webserver in webserver_lst:
+        uniq_servers.append(p.findall(webserver)[0][2:])
 
     for line in open(f"/output/http/{host}/httprobe/httprobe-{host}.txt", "r"):
         fqdn = p.findall(line)[0][2:]
         if fqdn not in uniq_servers: # not a duplicate
-            servers.append(line)
+            webserver_lst.append(line)
 
     with open(F"/output/http/{host}/webservers-{host}.txt", "w") as f:
-        for server in servers:
-            f.write(server)
+        for webserver in webserver_lst:
+            f.write(f"{webserver}\n")
 
     p = start_proc("wart", host, logger, pool)
     p.get()
