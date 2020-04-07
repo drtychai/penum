@@ -23,11 +23,9 @@ def formatter_message(message, use_color = True):
     return message
 
 COLORS = {
-    #'WARNING': YELLOW,
     'INFO': '1;34', # Light Blue
-    'DEBUG': '0;34', # Light Green
-    'CRITICAL': '1;32' # Light Green,
-    #'ERROR': RED
+    'DEBUG': '0;34', # Dark Blue
+    'LGREEN': '1;32' # Light Green,
 }
 
 class ColoredFormatter(logging.Formatter):
@@ -94,7 +92,7 @@ def api():
         raise TypeError("Content-Type header required.")
     finally:
         elapsed = time.perf_counter() - s_time
-        logger.critical(f"[+]{__file__} executed in {elapsed:0.2f} seconds.")
+        logger.info(f"{RESET_SEQ}\033[{COLORS['LGREEN']}m[+] penum executed in {elapsed:0.2f} seconds.")
     return
 
 app.run(host="0.0.0.0")

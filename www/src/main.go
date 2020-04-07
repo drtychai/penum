@@ -56,8 +56,6 @@ func main() {
 			Hosts: []string{r.FormValue("hostname")},
 		}
 		send(m)
-
-		tmpl.Execute(w, struct{ Success bool }{true})
 	})
 
 	http.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
@@ -88,8 +86,6 @@ func main() {
 			m.Hosts = append(m.Hosts, scanner.Text())
 		}
 		send(m)
-
-		tmpl.Execute(w, struct{ Success bool }{true})
 	})
 
 	http.ListenAndServe(":8080", nil)
