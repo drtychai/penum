@@ -29,7 +29,7 @@ print_usage() {
 
 start_single() {
   local host="$1"
-  curl -X POST -d "${host}" http://localhost:8080 &
+  curl -X POST -d "hostname=${host}" http://localhost:8080 &
   log_info "[+] Enumeration started on ${host}..."
 }
 

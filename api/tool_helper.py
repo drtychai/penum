@@ -3,6 +3,7 @@ from dns import resolver, reversename
 from multiprocessing import Pool
 import psql_helper
 import socket
+import re
 
 def tool_port_map(tool):
     mapping = {"amass":30000,
@@ -19,7 +20,7 @@ def tool_port_map(tool):
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, logger, pool):
-    logger.info(f"\033[1;34m[+] Starting {tool} on {host}...\033[0m")
+    logger.debug(f"[*] Starting {tool} on {host}...")
     return pool.apply_async(run_service, args=(tool, host, logger))
 
 def run_service(tool, host, logger):
@@ -35,25 +36,9 @@ def run_service(tool, host, logger):
     while True:
         chunk = s.recv(2048)
         if b"DONE" in chunk:
-            logger.info(f"\033[1;32m[*] {tool} FINISHED...\033[0m")
+            logger.debug(f"[*] {tool} FINISHED...")
             break
     return
-
-def get_output(tool,host):
-    """Return the given tool's output as a list."""
-    ret = ''
-    try:
-        output = b''
-        out_f = f"/{tool}-{host}.out"
-        with open(out_f, "rb") as f:
-            output += f.read()
-        ret = str(output, encoding="utf-8").rstrip().split()
-        if tool == "nmap":
-            # If XML, don't split into list
-            ret = str(output, encoding="utf-8").rstrip()
-    except FileNotFoundError:
-        raise FileNotFoundError
-    return ret
 
 def check_cache(host):
     """Checks if host has already been enumerated. Return boolean."""
@@ -84,7 +69,8 @@ def find_subdomains(host, logger):
              "subfinder", "sublist3r",
              "aiodnsbrute", "gobuster"]
 
-    logger.info("-"*50)
+    logger.info("\033[0m-"*50)
+    logger.info("[+] Launching wave one...")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
         procs.append(p)
@@ -98,9 +84,8 @@ def find_subdomains(host, logger):
     p.get()
 
     # update db with amass output
-    logger.info(f"\033[1;34m[+] Updating database with subdomains of {host}...\033[0m")
     psql_helper.update_subdomains(f"/output/subdomain/subdomains-{host}.json", logger)
-    logger.info(f"\033[1;32m[+] Database update complete...\033[0m")
+    logger.debug(f"[*] Database update complete...")
     return
 
 def http_enum(host, logger):
@@ -109,13 +94,35 @@ def http_enum(host, logger):
     procs = []
     tools = ["aquatone", "httprobe"]
 
-    logger.info("\033[0;32m[+] Beginning HTTP enumeration...\033[0m")
+    logger.info("[+] Beginning HTTP enumeration...")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
         procs.append(p)
 
     for proc in procs:
         proc.get()
+
+    # Combine and sort enumerated webservers
+    p = re.compile(r'/.*.[A-Za-z]{2,3}')
+    uniq_servers = []
+    servers = []
+    with open(f"/output/http/{host}/aquatone/aquatone_urls.txt", 'r') as f_in:
+        servers = f_in.read().splitlines()
+
+    for server in servers:
+        uniq_servers.append(p.findall(server)[0][2:])
+
+    for line in open(f"/output/http/{host}/httprobe/httprobe-{host}.txt", "r"):
+        fqdn = p.findall(line)[0][2:]
+        if fqdn not in uniq_servers: # not a duplicate
+            servers.append(line)
+
+    with open(F"/output/http/{host}/webserver-{host}.txt", "w") as f:
+        for server in servers:
+            f.write(server)
+
+    p = start_proc("wart", host, logger, pool)
+    p.get()
 
     return
 

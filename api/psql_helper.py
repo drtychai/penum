@@ -54,7 +54,8 @@ def update_subdomains(filename, logger):
     with open(filename) as f:
         new_subdomains = json.load(f)
     domain = new_subdomains['domain']
-
+    logger.info(f"[+] Updating database with subdomains of {domain}...")
+ 
     # Check if host has entry
     q = """SELECT subdomains FROM output WHERE domain = '%s';"""
     saved_subdomains = query(q % domain)
@@ -74,5 +75,5 @@ def update_subdomains(filename, logger):
     with open(f"/logs/subdomains-{domain}.json", 'w') as outfile:
         json.dump(sd_json, outfile)
 
-    logger.info(f"\033[1;32m[+] Updated JSON saved to ./api/logs/subdomains-{domain}.json\033[0m")
+    logger.debug(f"[*] Updated JSON saved to ./api/logs/subdomains-{domain}.json")
     return

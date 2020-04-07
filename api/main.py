@@ -10,22 +10,55 @@ import xmltodict, json
 import logging
 import time
 
-def init_logger(f_out):
-    logger = logging.getLogger('penum')
-    if (logger.hasHandlers()):
-        logger.handlers.clear()
+#These are the sequences need to get colored ouput
+RESET_SEQ = "\033[0m"
+COLOR_SEQ = "\033[%sm"
+BOLD_SEQ = "\033[1m"
 
-    logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+def formatter_message(message, use_color = True):
+    if use_color:
+        message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
+    else:
+        message = message.replace("$RESET", "").replace("$BOLD", "")
+    return message
 
-    fh = logging.FileHandler(f_out)
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(formatter)
+COLORS = {
+    #'WARNING': YELLOW,
+    'INFO': '1;34', # Light Blue
+    'DEBUG': '0;34', # Light Green
+    'CRITICAL': '1;32' # Light Green,
+    #'ERROR': RED
+}
 
-    logger.addHandler(fh)
-    return logger
+class ColoredFormatter(logging.Formatter):
+    def __init__(self, msg, use_color = True):
+        logging.Formatter.__init__(self, msg)
+        self.use_color = use_color
 
-### Flask
+    def format(self, record):
+        levelname = record.levelname
+        msg = record.msg
+        if self.use_color and levelname in COLORS:
+            msg_color = COLOR_SEQ % COLORS[levelname] + msg + RESET_SEQ
+            record.msg = msg_color
+        return logging.Formatter.format(self, record)
+
+
+# Custom logger class with multiple destinations
+class ColoredLogger(logging.Logger):
+    FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    COLOR_FORMAT = formatter_message(FORMAT, True)
+    def __init__(self, name):
+        logging.Logger.__init__(self, name, logging.DEBUG)
+
+        color_formatter = ColoredFormatter(self.COLOR_FORMAT)
+
+        fh = logging.FileHandler("/logs/flask-api.log")
+        fh.setFormatter(color_formatter)
+
+        self.addHandler(fh)
+        return
+
 
 app = Flask(__name__)
 @app.route("/")
@@ -38,7 +71,8 @@ def index():
 def api():
     """Main endpoint to kick of enumeration."""
     s_time = time.perf_counter()
-    logger = init_logger("/logs/flask-api.log")
+    logging.setLoggerClass(ColoredLogger)
+    logger = logging.getLogger('penum')
     try:
         hosts = request.json['Hosts']
         for host in hosts:
@@ -60,7 +94,7 @@ def api():
         raise TypeError("Content-Type header required.")
     finally:
         elapsed = time.perf_counter() - s_time
-        logger.info(f"\033[0;34m[+]{__file__} executed in {elapsed:0.2f} seconds.\033[0m")
+        logger.critical(f"[+]{__file__} executed in {elapsed:0.2f} seconds.")
     return
 
 app.run(host="0.0.0.0")

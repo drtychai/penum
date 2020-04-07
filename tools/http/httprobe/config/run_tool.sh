@@ -15,6 +15,6 @@ for p in `cat /ports.txt`;do
 done
 
 # Run httprobe over all subdomains
-cat ${HP_OUT}/subdomains-${host}.txt | httprobe -c 10000 -s ${P_ARG} > ${TOOL_OUT}/httpprobe-${host}.txt
+cat ${HP_OUT}/subdomains-${host}.txt | httprobe -c 10000 -s ${P_ARG} > ${TOOL_OUT}/httprobe-${host}.txt
 
 echo "DONE"
