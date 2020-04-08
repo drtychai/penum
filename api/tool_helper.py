@@ -16,7 +16,9 @@ def tool_port_map(tool):
                "aquatone":30007,
                "httprobe":30008,
                "wart":30009,
-               "nmap":30010}
+               "nikto":30010,
+               "dirsearch":30011,
+               "nmap":30012}
     return mapping[f"{tool}"]
 
 def start_proc(tool, host, logger, pool):

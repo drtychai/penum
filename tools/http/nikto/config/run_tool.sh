@@ -27,4 +27,8 @@ run_nikto () {
 export -f run_nikto
 cat ${TOOL_OUT}/webservers-${host}.txt | parallel -j+${CPU_COUNT} run_nikto {}
 
+cp /nikto/*.csv ${TOOL_OUT}/nikto/
+
+# Clean up
+rm /nikto/*.csv
 echo "DONE"
