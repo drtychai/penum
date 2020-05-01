@@ -9,7 +9,7 @@ import sys
 def run_altdns(domains):
     """Run altDNS with the given args."""
     for domain in domains:
-        altCmd = f"python3 /altdns/altdns"
+        altCmd = f"altdns"
         subdomains = f"/output/subdomain/recon-ng-{domain}.out"
         permList = f"/altdns/words.txt"
         output = f"/output/subdomain/altdns-{domain}.out"
@@ -52,6 +52,7 @@ def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
     install_modules(reconb, module_list + [f"{bf_module}",f"{report_module}"])
 
     pool = Pool()
+    procs = []
     for domain in domains:
         for module in module_list:
             p = pool.apply_async(run_module, args=(reconb, module, domain))
@@ -79,12 +80,17 @@ def run_recon(domains, bf_wordlist, is_altdns_set, out_file):
     return
 
 def main(argv):
-    try:
-        domains = argv.domains
-        with argv.in_file as f:
-            domains += f.read()
-    except Exception as e:
-        print(f"[-] Exception hit: {e}")
+    domains = argv.domains
+    if argv.in_file:
+        try:
+            with argv.in_file as f:
+                domains += f.read()
+        except Exception as e:
+            print(f"[-] Exception hit: {e}")
+
+    if not domains:
+        print("[-] No domain passed. Exiting...")
+        sys.exit(1)
     run_recon(domains, argv.wordlist, argv.runAltDns, argv.out_file)
     return
 
