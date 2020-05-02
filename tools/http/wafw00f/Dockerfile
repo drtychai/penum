@@ -1,17 +1,17 @@
-FROM python:2
+FROM python:3
+WORKDIR /
 
 RUN apt update --fix-missing \
-    && apt install -y xinetd git \
+    && apt install -y xinetd git jq parallel \
     && apt clean
 
 ENV LC_ALL "C.UTF-8"
 ENV LANG "C.UTF-8"
 
-RUN git clone https://github.com/EnableSecurity/wafw00f.git /wafw00f
+RUN git clone https://github.com/EnableSecurity/wafw00f.git
 
-WORKDIR /wafw00f
-RUN pip install --upgrade pip setuptools && \
-    python setup.py install
+RUN python3 -m pip install --upgrade pip setuptools \
+    && python3 -m pip install /wafw00f/
 
 ADD config/run_tool.sh /etc/run_tool.sh
 ADD config/main.xinetd /etc/xinetd.d/main
