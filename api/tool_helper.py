@@ -7,22 +7,20 @@ import re
 
 
 def tool_port_map(tool):
-    mapping = {
-        "amass": 30000,
-        "subfinder": 30001,
-        "aiodnsbrute": 30002,
-        "sublist3r": 30003,
-        "gobuster": 30004,
-        "massdns": 30005,
-        "recon-ng": 30006,
-        "aquatone": 30007,
-        "httprobe": 30008,
-        "wart": 30009,
-        "nikto": 30010,
-        "dirsearch": 30011,
-        "nmap": 30012,
-        "wafw00f": 30013,
-    }
+    mapping = {"amass":30000,
+               "subfinder":30001,
+               "aiodnsbrute":30002,
+               "sublist3r":30003,
+               "gobuster":30004,
+               "massdns":30005,
+               "recon-ng":30006,
+               "aquatone":30007,
+               "httprobe":30008,
+               "wart":30009,
+               "nikto":30010,
+               "dirsearch":30011,
+               "nmap":30012,
+               "wafw00f": 30013}
     return mapping[f"{tool}"]
 
 
@@ -30,17 +28,16 @@ def start_proc(tool, host, logger, pool):
     logger.debug(f"[*] Starting {tool} on {host}...")
     return pool.apply_async(run_service, args=(tool, host, logger))
 
-
 def run_service(tool, host, logger):
     """Run service and copy output from tool's container."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((tool, tool_port_map(tool)))
 
     # Send host
-    payload = bytes(f"{host}\n", encoding="utf-8")
+    payload = bytes(f"{host}\n", encoding='utf-8')
     s.send(payload)
 
-    output = b""
+    output = b''
     while True:
         chunk = s.recv(2048)
         if b"DONE" in chunk:
@@ -111,20 +108,17 @@ def http_enum(host, logger):
         proc.get()
 
     # Combine and sort enumerated webservers
-    p = re.compile(r"/.*.[A-Za-z]{2,3}")
+    p = re.compile(r'/.*.[A-Za-z]{2,3}')
     uniq_servers = []
     servers = []
 
-    webserver_lst = [
-        line.rstrip("\n")
-        for line in open(f"/output/http/{host}/aquatone/aquatone_urls.txt")
-    ]
+    webserver_lst = [line.rstrip('\n') for line in open(f"/output/http/{host}/aquatone/aquatone_urls.txt")]
     for webserver in webserver_lst:
         uniq_servers.append(p.findall(webserver)[0][2:])
 
     for line in open(f"/output/http/{host}/httprobe/httprobe-{host}.txt", "r"):
         fqdn = p.findall(line)[0][2:]
-        if fqdn not in uniq_servers:  # not a duplicate
+        if fqdn not in uniq_servers: # not a duplicate
             webserver_lst.append(line)
 
     with open(f"/output/http/{host}/webservers-{host}.txt", "w") as f:
@@ -132,7 +126,7 @@ def http_enum(host, logger):
             f.write(f"{webserver}\n")
 
     procs = []
-    tools = ["dirsearch", "nikto", "wart", "wafw00f"]
+    tools = ["dirsearch","nikto","wart","wafw00f"]
     logger.info("[+] Launching wave three...")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)
