@@ -7,4 +7,4 @@ output/*
 api/__pycache__/*
 api/logs/*
 timing.txt
-api/pytextbelt.py
+api/pytextbelt_key.py
