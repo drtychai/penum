@@ -1,6 +1,6 @@
 --- wart.py.original	2020-04-07 00:23:33.000000000 -0700
 +++ wart.py	2020-04-07 00:23:04.000000000 -0700
-@@ -6,11 +6,22 @@
+@@ -6,11 +6,23 @@
  from plugins.RobotsPlugin import RobotsPlugin
  from plugins.SiteInfoPlugin import SiteInfoPlugin
  import urllib3
@@ -20,12 +20,13 @@
 +target_urls = [line.rstrip('\n') for line in open(f_in)]
 +
 +# Extract TLD
-+p = re.compile(r'\w+.[A-Za-z]{2,3}')
-+tld = p.findall(target_urls[0])[1]
++p = re.compile(r'\w+.[A-Za-z]{2,3}\.')
++tmp = p.findall(target_urls[0])
++tld = tmp[len(tmp)-1][:-1]
  results = []
  
  for idx, url in enumerate(target_urls):
-@@ -44,8 +55,6 @@
+@@ -44,8 +56,6 @@
      results.append(target.dict())
  
  

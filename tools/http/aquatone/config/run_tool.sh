@@ -15,7 +15,4 @@ cat ${AQ_OUT}/subdomains-${host}.txt | aquatone -threads 16 -ports xlarge -out $
 rm ${AQ_OUT}/subdomains-${host}.txt
 mv ${AQ_OUT}/* ${TOOL_OUT}/
 
-# Pull list of webservers
-jq ".pages | keys[]" ${TOOL_OUT}/aquatone_session.json | sed 's/"//g' > ${TOOL_OUT}/../webservers-${host}.txt
-
 echo "DONE"

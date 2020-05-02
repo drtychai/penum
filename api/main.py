@@ -73,7 +73,7 @@ def api():
     logger = logging.getLogger('penum')
     try:
         hosts = request.json['Hosts']
-        for host in hosts:
+        for host in hosts: # TODO: change from iterative to parallel with mp
             # Subdomain enumeration
             logger.info(f"{RESET_SEQ}" + "-"*50)
             try:
@@ -83,7 +83,7 @@ def api():
                 find_subdomains(host, logger)
 
             # HTTP enumeration
-            http_enum(host, logger)
+            #http_enum(host, logger)
 
         # send SMS
         #sms_client = Textbelt.Recipient("<PHONE_NUM>", "<REGION>")
