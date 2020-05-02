@@ -5,6 +5,7 @@ import psql_helper
 import socket
 import re
 
+
 def tool_port_map(tool):
     mapping = {"amass":30000,
                "subfinder":30001,
@@ -18,8 +19,10 @@ def tool_port_map(tool):
                "wart":30009,
                "nikto":30010,
                "dirsearch":30011,
-               "nmap":30012}
+               "nmap":30012,
+               "wafw00f": 30013}
     return mapping[f"{tool}"]
+
 
 def start_proc(tool, host, logger, pool):
     logger.debug(f"[*] Starting {tool} on {host}...")
@@ -118,12 +121,12 @@ def http_enum(host, logger):
         if fqdn not in uniq_servers: # not a duplicate
             webserver_lst.append(line)
 
-    with open(F"/output/http/{host}/webservers-{host}.txt", "w") as f:
+    with open(f"/output/http/{host}/webservers-{host}.txt", "w") as f:
         for webserver in webserver_lst:
             f.write(f"{webserver}\n")
 
     procs = []
-    tools = ["dirsearch","nikto","wart"]
+    tools = ["dirsearch","nikto","wart","wafw00f"]
     logger.info("[+] Launching wave three...")
     for tool in tools:
         p = start_proc(tool, host, logger, pool)

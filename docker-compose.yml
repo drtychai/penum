@@ -198,12 +198,21 @@ services:
         working_dir: /
         entrypoint: /etc/run_xinetd.sh
         ports:
-            - "30011"
+            - "30012"
         volumes:
             - out-vol:/output
         networks:
             - tn
         read_only: false
-
-
-
+    wafw00f:
+        image: penum:wafw00f
+        build: ./tools/http/wafw00f
+        working_dir: /
+        entrypoint: /etc/run_xinetd.sh
+        ports:
+          - "30013"
+        volumes:
+          - out-vol:/output
+        networks:
+          - tn
+        read_only: false
