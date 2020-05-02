@@ -1,19 +1,13 @@
 #!/bin/bash
 read host
 TOOL_OUT="/output/http/${host}"
-
-# Extract FQDNs into newline delineated file for wafw00f consumption
 mkdir -p ${TOOL_OUT}
 
-# Forge list to check
-cat ${TOOL_OUT}/webservers-${host} | sed 's/\.$//g' > ${TOOL_OUT}/wafw00f-${host}.txt
+# Parallelize wafw00f across all webservers
+cat ${TOOL_OUT}/webserver-${host}.txt | parallel "wafw00f -a -o /dev/shm/wafw00f-${host}-{= s:^.*\/\/::, s:\..*$:: =}.json {}"
 
+jq -s ".[0]=[.[]|add]|.[0]" /dev/shm/wafw00f-${host}-*.json > ${TOOL_OUT}/wafw00f-${host}.json
 
-# Run wafw00f on all subdomains
-wafw00f -o ${TOOL_OUT}/wafw00f-${host}.json \
-        -i ${TOOL_OUT}/wafw00f-${host}.txt
-
-rm ${TOOL_OUT}/wafw00f-${host}.txt
-
+# Cleanup
+rm -rf /dev/shm/*.json 2>/dev/null
 echo "DONE"
-
