@@ -58,6 +58,10 @@ Enumerate against newline-delineated list of FQDNs/IPs:
 ```
 This is equivalent to: `curl -F 'uploadedfile=@/path/to/hosts.txt' http://<hostname>[:<port>]/upload`
 
+View execution log:
+```
+tail -f api/logs/flask-api.log
+```
 
 Custom DB query:
 ```

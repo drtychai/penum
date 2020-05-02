@@ -1,0 +1,39 @@
+--- wart.py.original	2020-04-07 00:23:33.000000000 -0700
++++ wart.py	2020-04-07 00:23:04.000000000 -0700
+@@ -6,11 +6,23 @@
+ from plugins.RobotsPlugin import RobotsPlugin
+ from plugins.SiteInfoPlugin import SiteInfoPlugin
+ import urllib3
++import sys
++import re
+ 
+ urllib3.disable_warnings()
+ 
+-target_urls = ["http://example.com"]
+-
++#target_urls = ["http://reddit.com"]
++if len(sys.argv) < 2:
++    print(f"Usage: {sys.argv[0]} <url-file>")
++    sys.exit(2)
++
++f_in = f"{sys.argv[1]}"
++target_urls = [line.rstrip('\n') for line in open(f_in)]
++
++# Extract TLD
++p = re.compile(r'\w+.[A-Za-z]{2,3}\.')
++tmp = p.findall(target_urls[0])
++tld = tmp[len(tmp)-1][:-1]
+ results = []
+ 
+ for idx, url in enumerate(target_urls):
+@@ -44,8 +56,6 @@
+     results.append(target.dict())
+ 
+ 
+-# print(json.dumps(results, indent=4))
++with open(f"/output/http/{tld}/wart-{tld}.json",'w') as f:
++    f.write(json.dumps(results, indent=4))
+ 
+-f = open("example_output.json", "w")
+-f.write(json.dumps(results, indent=4))
+-f.close()
