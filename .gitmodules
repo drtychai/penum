@@ -1,0 +1,4 @@
+[submodule "api/dropshot-api/dropshot"]
+	path = api/dropshot-api/dropshot
+    url = https://github.com/drtychai/dropshot
+    branch = master

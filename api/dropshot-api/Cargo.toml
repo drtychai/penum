@@ -1,0 +1,12 @@
+[package]
+name = "penum-api"
+version = "0.1.0"
+authors = ["drtychai <drtychai@protonmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "papi"
+path = "./src/main.rs"
+
+[dependencies]
+dropshot = { version = "*", path = "dropshot" }
