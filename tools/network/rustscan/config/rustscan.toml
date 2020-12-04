@@ -1,0 +1,24 @@
+#ulimit = 10000
+##batch_size = 2500 # defaults to 5000
+#addresses = [
+#    #"192.168.187.239",
+#    "1.1.1.1",
+#    "37.1.145.14",
+#]
+#command = [
+#    "-v",  
+#    "-T4",  # Agressive scan (=== '-A')
+#    "-sU",  # UDP
+#    "-sV",  # Use version scanning (UDP probes)
+#    "-sS",  # Set TCP SYN flag
+#    #"-sM",  # Maimon scan (FIN/ACK probe)
+#    #"-sF",  # Set TCP FIN flag
+#    #"-sN",  # Set TCP NULL flag
+#    #"-sX",  # Set FIN, PSH, URG flags
+#    #"-sO",  # IP protocol scan
+#    "-Pn",  # Skip host discovery
+#    "-oA", "out/test",
+#    "--version-intensity", "0",
+#    "--min-hostgroup", "100",
+#]
+#range = { start = 0, end = 65535 }

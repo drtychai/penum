@@ -1,9 +1,9 @@
 FROM golang:1.13.7
-ENV GO111MODULE on
-ENV GOOS linux
-ENV GOARCH amd64
-ENV GOPATH /go
-RUN go get -v -u github.com/projectdiscovery/subfinder/...
+ENV GO111MODULE=on \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOPATH=/go 
+RUN go get -v -u github.com/projectdiscovery/subfinder/v2/cmd/subfinder
 
 FROM ubuntu:18.04
 ENV TOOL subfinder

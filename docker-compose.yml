@@ -192,9 +192,9 @@ services:
         networks:
             - tn
         read_only: false
-    nmap:
-        image: penum:nmap
-        build: ./tools/network/nmap
+    rustscan:
+        image: penum:rustscan
+        build: ./tools/network/rustscan
         working_dir: /
         entrypoint: /etc/run_xinetd.sh
         ports:
