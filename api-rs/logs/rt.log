@@ -1,0 +1,14 @@
+{"msg":"Starting watchdog for \"bynx.io\"","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.088083600+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on sublist3r","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.111461600+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on subfinder","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.134470100+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on aiodnsbrute","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.157453700+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on recon-ng","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.179805300+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on gobuster","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.212111700+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on amass","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:52:12.231803900+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for \"bynx.io\"","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.600345900+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on amass","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.623675500+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on subfinder","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.646585+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on aiodnsbrute","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.667804500+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on sublist3r","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.688275600+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on gobuster","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.707483+00:00","hostname":"b48634372c36","pid":7}
+{"msg":"Starting watchdog for bynx.io on recon-ng","v":0,"name":"bynx.io","level":30,"time":"2020-12-22T09:54:43.725311800+00:00","hostname":"b48634372c36","pid":7}

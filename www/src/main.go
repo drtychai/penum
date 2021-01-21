@@ -19,7 +19,7 @@ type Hostnames struct {
 }
 
 func send(arr Hostnames) {
-	url := "http://api:5000"
+	url := "http://api-rs:5001"
 	fmt.Println("URL:>", url)
 
 	b, err := json.Marshal(arr)
@@ -88,5 +88,5 @@ func main() {
 		send(m)
 	})
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe("0.0.0.0:8080", nil)
 }

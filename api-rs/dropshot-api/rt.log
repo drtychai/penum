@@ -1,0 +1,2 @@
+{"msg":"Targets: [\"example.com\"]","v":0,"name":"penum-runtime","level":20,"time":"2020-12-21T23:25:53.708787-08:00","hostname":"vostok","pid":94390}
+{"msg":"Targets: [\"example.com\"]","v":0,"name":"penum-runtime","level":20,"time":"2020-12-21T23:35:23.919488-08:00","hostname":"vostok","pid":96613}

@@ -1,0 +1,46 @@
+[package]
+name = "penum-api"
+version = "0.1.0"
+authors = ["drtychai <drtychai@protonmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "psv"
+path = "./src/main.rs"
+
+[dependencies.phf]
+features = ["macros"]
+version = "0.7.24"
+
+[dependencies.dropshot]
+version = "0.3.0"
+
+[dependencies.tokio]
+version = "0.2.24"
+
+[dependencies.async-std]
+features = ["attributes"]
+version = "1.3.0"
+
+[dependencies.serde]
+features = ["derive"]
+version = "1.0.118"
+
+[dependencies.http]
+version = "0.2.2"
+
+[dependencies.hyper]
+version = "0.13.9"
+
+[dependencies.schemars]
+version = "0.7.6"
+
+[dependencies.slog]
+version = "2.7.0"
+
+[dependencies.slog-syslog]
+version = "0.12.0"
+
+[dependencies.futures]
+version = "0.3.8"
+

@@ -1,0 +1,11 @@
+{"msg":"registered endpoint","v":0,"name":"penum","level":20,"time":"2020-12-21T23:23:52.452507-08:00","hostname":"vostok","pid":94037,"path":"/","method":"POST"}
+{"msg":"registered endpoint","v":0,"name":"penum","level":20,"time":"2020-12-21T23:25:38.734859-08:00","hostname":"vostok","pid":94390,"path":"/","method":"POST"}
+{"msg":"listening","v":0,"name":"penum","level":30,"time":"2020-12-21T23:25:38.735512-08:00","hostname":"vostok","pid":94390,"local_addr":"0.0.0.0:5001"}
+{"msg":"accepted connection","v":0,"name":"penum","level":30,"time":"2020-12-21T23:25:53.707756-08:00","hostname":"vostok","pid":94390,"remote_addr":"127.0.0.1:51997"}
+{"msg":"incoming request","v":0,"name":"penum","level":10,"time":"2020-12-21T23:25:53.708302-08:00","hostname":"vostok","pid":94390,"uri":"/","method":"POST","req_id":"2120df3f-9645-4f77-8651-5a4c23924103"}
+{"msg":"request completed","v":0,"name":"penum","level":30,"time":"2020-12-21T23:25:53.709335-08:00","hostname":"vostok","pid":94390,"uri":"/","method":"POST","req_id":"2120df3f-9645-4f77-8651-5a4c23924103","response_code":"200"}
+{"msg":"registered endpoint","v":0,"name":"penum","level":20,"time":"2020-12-21T23:35:21.859432-08:00","hostname":"vostok","pid":96613,"path":"/","method":"POST"}
+{"msg":"listening","v":0,"name":"penum","level":30,"time":"2020-12-21T23:35:21.860456-08:00","hostname":"vostok","pid":96613,"local_addr":"0.0.0.0:5001"}
+{"msg":"accepted connection","v":0,"name":"penum","level":30,"time":"2020-12-21T23:35:23.918582-08:00","hostname":"vostok","pid":96613,"remote_addr":"127.0.0.1:52008"}
+{"msg":"incoming request","v":0,"name":"penum","level":10,"time":"2020-12-21T23:35:23.919138-08:00","hostname":"vostok","pid":96613,"uri":"/","method":"POST","req_id":"18fae70a-7050-4fc8-99f6-333102822445"}
+{"msg":"request completed","v":0,"name":"penum","level":30,"time":"2020-12-21T23:35:23.920182-08:00","hostname":"vostok","pid":96613,"uri":"/","method":"POST","req_id":"18fae70a-7050-4fc8-99f6-333102822445","response_code":"200"}

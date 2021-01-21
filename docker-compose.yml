@@ -20,11 +20,24 @@ services:
             - dbn
             - tn
             - wn
+    api-rs:
+        image: penum:api-rs
+        build: ./api-rs
+        ports:
+            - "5001:5001"
+        volumes:
+            - ./api-rs/logs:/logs
+            - out-vol:/output
+            - db-vol:/psql
+        networks:
+            - dbn
+            - tn
+            - wn
     web:
         image: penum:www
         build: ./www
         environment:
-            - API_ENDPOINT=http://api:5000
+            - API_ENDPOINT=http://api-rs:5001
         ports:
             - "8080:8080"
         volumes:
