@@ -13,7 +13,7 @@ RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`cu
 RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 ADD src/wart.patch /wart.patch
-RUN git clone https://gitlab.com/drtychai/WART /wart \
+RUN git clone https://gitlab.com/reznok/WART /wart \
     && git apply /wart.patch
 
 RUN pip install --upgrade pip setuptools \
