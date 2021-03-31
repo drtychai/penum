@@ -1,8 +1,8 @@
-FROM golang:1.13.7
+FROM golang:1.13.1
 ENV GOOS linux
 ENV GOARCH amd64
 ENV GOPATH /go
-RUN go get -v -u github.com/michenriksen/aquatone/
+RUN go get -v github.com/michenriksen/aquatone/
 
 FROM ubuntu:18.04
 ENV TOOL aquatone

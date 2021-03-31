@@ -1,4 +1,4 @@
-FROM golang:1.13.7
+FROM golang:1.16.2
 ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64 \
